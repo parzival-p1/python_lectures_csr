@@ -185,17 +185,17 @@ class Interface:
         else:
             pass
 
-
 # brand, model, transmission, color, price, year, km, car_type, fuel, id, stock)
     def show_error(self):
         messagebox.showerror("Error", "Ha ocurrido un problema inesperado!!!")
 
 """
-    0. Como seria el codigo si tuviera un arbol que tiene 4 niveles? como seria la logica? Como seria el bind para el arbol de 4?
-    1. Quitar todos los message box y poner pass
-    2. Hacer todos los new para cada submenu restante excepto Sales
-    3. Investigar como hacer una tabla, en Tkinter,para generar un reporte de datos y como desploegarla
+    0. Hacer un programa, sencillo. solo 3 funciones, 
+        1. Recibe *argas
+        2. Recibe **kwargs
+        3. Manda llamar las 2 anteriores y tiene el ejemplo
+        
+    1. Arreglar la and de car_interface. debe funcionar como la or, sin copilot
 """
-
 system = Interface()
 system.run()

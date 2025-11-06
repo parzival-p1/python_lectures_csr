@@ -24,3 +24,62 @@ class Sales_interface:
         self.new_label_frame.place(x=5, y=5)
 
         self.new_frame.place(x=0, y=0)
+
+        # Id
+        lbl_id = tk.Label(self.new_label_frame, bg='#484b4c', fg="white", text='Sales Id: ')
+        lbl_id.place(x=20, y=20)
+        self.txt_id = tk.Entry(self.new_label_frame, width=20)
+        self.txt_id.place(x=120, y=20)
+
+        # Name
+        lbl_name = tk.Label(self.new_label_frame, bg='#484b4c', fg="white", text='Client Name: ')
+        lbl_name.place(x=20, y=60)
+        self.txt_id = tk.Entry(self.new_label_frame, width=20)
+        self.txt_id.place(x=120, y=60)
+
+        # Last Name
+        lbl_last_name = tk.Label(self.new_label_frame, bg='#484b4c', fg="white", text='Client Last Name: ')
+        lbl_last_name.place(x=350, y=60)
+        self.txt_id = tk.Entry(self.new_label_frame, width=20)
+        self.txt_id.place(x=450, y=60)
+
+        # Email
+        lbl_email = tk.Label(self.new_label_frame, bg='#484b4c', fg="white", text='Email: ')
+        lbl_email.place(x=20, y=90)
+        self.txt_id = tk.Entry(self.new_label_frame, width=20)
+        self.txt_id.place(x=120, y=90)
+
+        # Phone number
+        lbl_phone_number = tk.Label(self.new_label_frame, bg='#484b4c', fg="white", text='Phone Number: ')
+        lbl_phone_number.place(x=350, y=90)
+        self.txt_id = tk.Entry(self.new_label_frame, width=20)
+        self.txt_id.place(x=450, y=90)
+
+        # Address
+        lbl_address = tk.Label(self.new_label_frame, bg='#484b4c', fg="white", text='Address: ')
+        lbl_address.place(x=20, y=120)
+        self.txt_id = tk.Entry(self.new_label_frame, width=20)
+        self.txt_id.place(x=120, y=120)
+
+        # Birthday
+        lbl_birthday = tk.Label(self.new_label_frame, bg='#484b4c', fg="white", text='Birthday: ')
+        lbl_birthday.place(x=350, y=120)
+        self.txt_id = tk.Entry(self.new_label_frame, width=20)
+        self.txt_id.place(x=450, y=120)
+
+        # Gender
+        lbl_gender = tk.Label(self.new_label_frame, bg='#484b4c', fg="white", text='Gender: ')
+        lbl_gender.place(x=20, y=150)
+        self.txt_id = tk.Entry(self.new_label_frame, width=20)
+        self.txt_id.place(x=120, y=150)
+
+        # Purchased product
+        lbl_product = tk.Label(self.new_label_frame, bg='#484b4c', fg="white", text='Purchased product: ')
+        lbl_product.place(x=350, y=150)
+        self.txt_id = tk.Entry(self.new_label_frame, width=20)
+        self.txt_id.place(x=450, y=150)
+
+        # Buttons
+        self.btn_add_employee = tk.Button(self.new_label_frame, text="Add Client", width=18)
+        self.btn_add_employee.place(x=450, y=280)
+        self.new_frame.place(x=0, y=0)

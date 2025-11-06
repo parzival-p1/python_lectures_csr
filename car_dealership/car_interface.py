@@ -60,13 +60,15 @@ class Car_interface:
         # Transmission
         lbl_transmission = tk.Label(self.new_label_frame, bg='#484b4c', fg="white", text='Transmission: ')
         lbl_transmission.place(x=20, y=90)
-        self.txt_transmission = ttk.Combobox(self.new_label_frame, values=['Manual', 'Automatic'], state="readonly", width=18)
+        self.txt_transmission = ttk.Combobox(self.new_label_frame, values=['Manual', 'Automatic'],
+                                             state="readonly", width=18)
         self.txt_transmission.place(x=120, y=90)
 
         # Color
         lbl_color = tk.Label(self.new_label_frame, bg='#484b4c', fg="white", text='Color: ')
         lbl_color.place(x=350, y=90)
-        self.txt_color = ttk.Combobox(self.new_label_frame, width=18, values=['Red', 'White', 'Black', 'Blue', 'Grey'], state="readonly")
+        self.txt_color = ttk.Combobox(self.new_label_frame, width=18, values=['Red', 'White', 'Black', 'Blue', 'Grey'],
+                                      state="readonly")
         self.txt_color.place(x=450, y=90)
 
         # Price
@@ -78,7 +80,8 @@ class Car_interface:
         # Year
         lbl_year = tk.Label(self.new_label_frame, bg='#484b4c', fg="white", text='Year: ')
         lbl_year.place(x=350, y=120)
-        self.txt_year = ttk.Combobox(self.new_label_frame, width=18, values=['2020', '2021', '2022', '2023', '2024', '2025'], state="readonly")
+        self.txt_year = ttk.Combobox(self.new_label_frame, width=18, values=['2020', '2021', '2022', '2023', '2024', '2025'],
+                                     state="readonly")
         self.txt_year.place(x=450, y=120)
 
         # Km
@@ -90,13 +93,15 @@ class Car_interface:
         # Car Type
         lbl_car_type = tk.Label(self.new_label_frame, bg='#484b4c', fg="white", text='Car type: ')
         lbl_car_type.place(x=350, y=150)
-        self.txt_car_type = ttk.Combobox(self.new_label_frame, width=18, values=['Sedan', 'SUV', 'Coupe', 'Sport'], state="readonly")
+        self.txt_car_type = ttk.Combobox(self.new_label_frame, width=18, values=['Sedan', 'SUV', 'Coupe', 'Sport'],
+                                         state="readonly")
         self.txt_car_type.place(x=450, y=150)
 
         # Fuel
         lbl_fuel = tk.Label(self.new_label_frame, bg='#484b4c', fg="white", text='Fuel: ')
         lbl_fuel.place(x=20, y=180)
-        self.txt_car_fuel = ttk.Combobox(self.new_label_frame, width=18, values=['Gas', 'Electric', 'Hybrid', 'Diesel'], state="readonly")
+        self.txt_car_fuel = ttk.Combobox(self.new_label_frame, width=18, values=['Gas', 'Electric', 'Hybrid', 'Diesel'],
+                                         state="readonly")
         self.txt_car_fuel.place(x=120, y=180)
 
         # Stock
@@ -109,6 +114,22 @@ class Car_interface:
         self.btn_add_car = tk.Button(self.new_label_frame, text="Add Car", width=18)
         self.btn_add_car.place(x=450, y=280)
 
-
         # brand, model, transmission, color, price, year, km, car_type, fuel, id, stock)
         self.new_frame.place(x=0, y=0)
+
+    def add_new_car(self): #  brand, model, transmission, color, price, year, km, car_type, fuel, id, stock
+        pass
+
+    def validate_car_info(self):
+        # no validar, precio, km, stock, y id
+        if (self.txt_brand.get() == "" or self.txt_model.get() == "" or self.txt_transmission.get() == ""
+                or self.txt_color.get() == "" or self.txt_year.get() == "" or self.txt_car_type.get() == ""
+                or self.txt_car_fuel.get() == "" or self.txt_price.get() == "", self.txt_km.get() == ""
+                or self.txt_stock.get() == "" or self.txt_id.get() == ""):
+            return False
+        elif (not self.txt_km.get().isnumeric() or not self.txt_stock.get().isnumeric() or not self.txt_id.get().isnumeric()):
+
+        elif (not self.txt_km.get().isnumeric() and not self.txt_stock.get().isnumeric() and not self.txt_id.get().isnumeric()):
+
+            return False
+

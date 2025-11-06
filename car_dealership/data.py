@@ -12,6 +12,3 @@ class Data:
 
     def add_car(self):
         pass
-
-
-
