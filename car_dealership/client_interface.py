@@ -1,8 +1,13 @@
+import re
+
+import pandas as pd
+
 import data
 import tkinter as tk
 from tkcalendar import DateEntry
 from tkinter import messagebox
 from tkinter import ttk
+from sales_man_interface import Sales_man_interface
 
 class Client_interface:
     def __init__(self, Data, content_frame, bottom_frame):
@@ -40,6 +45,8 @@ class Client_interface:
         lbl_id = tk.Label(self.new_label_frame, bg='#484b4c', fg="white", text='Client Id: ')
         lbl_id.place(x=20, y=20)
         self.txt_id = tk.Entry(self.new_label_frame, width=20)
+        self.txt_id.insert(0, str(self.data.get_next_client_id()))
+        self.txt_id.config(state='readonly')
         self.txt_id.place(x=120, y=20)
 
         # Name
@@ -82,10 +89,60 @@ class Client_interface:
         # Gender
         lbl_gender = tk.Label(self.new_label_frame, bg='#484b4c', fg="white", text='Gender: ')
         lbl_gender.place(x=20, y=150)
-        self.txt_gender = tk.Entry(self.new_label_frame, width=20)
+        self.txt_gender = ttk.Combobox(self.new_label_frame, width=20, values=["Female", "Male", "Other"], state='readonly')
         self.txt_gender.place(x=120, y=150)
 
         # Buttons
-        self.btn_add_employee = tk.Button(self.new_label_frame, text="Add Client", width=18)
+        self.btn_add_employee = tk.Button(self.new_label_frame, text="Add Client", width=18, command=self.add_new_client)
         self.btn_add_employee.place(x=450, y=280)
         self.new_frame.place(x=0, y=0)
+
+    def add_new_client(self): # 'ID', 'Name', 'Last Name', 'Phone Number', 'Address', 'Email', 'Gender', 'Birthday'
+        if (self.validate_client_info()):
+            client_dict = {
+                'ID': self.txt_id.get(),
+                'Name': self.txt_name.get(),
+                'Last Name': self.txt_last_name.get(),
+                'Phone Number': self.txt_phone_number.get(),
+                'Address': self.txt_address.get(),
+                'Email': self.txt_email.get(),
+                'Gender': self.txt_gender.get(),
+                'Birthday': self.txt_bday.get()
+            }
+            self.data.add_client(client_dict)
+            messagebox.showinfo("Exito!", "El nuevo cliente se ha añadido!")
+            self.clear_fields()
+        else:
+            messagebox.showinfo("Mal!", "Algo anda mal")
+
+    def validate_client_info(self):
+        # no validar, precio, km, stock, y id
+        regex = r"[+-]?[0-9]+\.[0-9]+"
+        if (self.txt_name.get() == "" or self.txt_last_name.get() == "" or self.txt_email.get() == ""
+                or self.txt_phone_number.get() == "" or self.txt_address.get() == "" or self.txt_bday.get() == ""
+                or self.txt_gender.get() == "" or self.txt_id.get() == ""):
+            messagebox.showerror("ERROR!!!", "Los campos no pueden estar vacios!")
+            return False
+
+        if not self.validate_email(self.txt_email.get()):
+            messagebox.showerror("ERROR!!!", "El email no tiene un formato valido")
+            return False
+        return True
+
+    def validate_email(self, email: str) -> bool:
+        patron = r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$'
+        return re.match(patron, email) is not None
+
+    def clear_fields(self):
+        self.txt_id.config(state='normal')
+        self.txt_id.delete(0, tk.END)
+        self.txt_id.insert(0, str(self.data.get_next_client_id()))
+        self.txt_id.config(state='readonly')
+        self.txt_gender.set('')
+
+        self.txt_phone_number.delete(0, tk.END)
+        self.txt_name.delete(0, tk.END)
+        self.txt_last_name.delete(0, tk.END)
+        self.txt_email.delete(0, tk.END)
+        self.txt_address.delete(0, tk.END)
+        self.txt_bday.delete(0, tk.END)

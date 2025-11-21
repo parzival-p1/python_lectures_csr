@@ -83,3 +83,7 @@ class Sales_interface:
         self.btn_add_employee = tk.Button(self.new_label_frame, text="Add Client", width=18)
         self.btn_add_employee.place(x=450, y=280)
         self.new_frame.place(x=0, y=0)
+
+"""
+    AÑADIR UN CAMPO CON TEXTBOX
+"""

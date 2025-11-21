@@ -1,7 +1,9 @@
 import data
+import pandas as pd
 import tkinter as tk
 from tkinter import messagebox
 from tkinter import ttk
+import re
 
 class Car_interface:
     def __init__(self, Data, content_frame, bottom_frame):
@@ -18,7 +20,6 @@ class Car_interface:
                        'Maserati' : ['Grecale', 'MODENA'],
                        'Lexus' : ['IS', 'ES', 'LS']
                        }
-
 
     def update_models(self, event):
         brand = self.txt_brand.get()
@@ -41,6 +42,8 @@ class Car_interface:
         lbl_id = tk.Label(self.new_label_frame, bg='#484b4c', fg="white", text='Id: ')
         lbl_id.place(x=20, y=20)
         self.txt_id = tk.Entry(self.new_label_frame, width=20)
+        self.txt_id.insert(0, str(self.data.get_next_car_id()))
+        self.txt_id.config(state='readonly')
         self.txt_id.place(x=120, y=20)
 
         # Brand
@@ -111,25 +114,165 @@ class Car_interface:
         self.txt_stock.place(x=450, y=180)
 
         # Buttons
-        self.btn_add_car = tk.Button(self.new_label_frame, text="Add Car", width=18)
+        self.btn_add_car = tk.Button(self.new_label_frame, text="Add Car", width=18, command=self.add_new_car)
         self.btn_add_car.place(x=450, y=280)
 
         # brand, model, transmission, color, price, year, km, car_type, fuel, id, stock)
         self.new_frame.place(x=0, y=0)
 
+    def delete_car(self):
+        self.new_frame = tk.Frame(self.content_frame, width=self.content_frame.winfo_width(),
+                                  height = self.content_frame.winfo_height(), bg='#484b4c')
+
+        self.new_label_frame = tk.LabelFrame(self.new_frame, text="New Car",
+                                             bg='#484b4c',
+                                             width=self.content_frame.winfo_width() - 10,
+                                             height = self.content_frame.winfo_height() - 10,
+                                             fg='white')
+        self.new_label_frame.place(x=5, y=5)
+
+        # select car
+        lbl_select_car = tk.Label(self.new_label_frame, bg='#484b4c', fg="white", text='Select car: ')
+        lbl_select_car.place(x=20, y=60)
+        self.txt_select_car = ttk.Combobox(self.new_label_frame, width=18, state="readonly",
+                                           values=self.data.df_cars["ID"].tolist())
+        self.txt_select_car.place(x=120, y=60)
+
+        # Buttons
+        self.btn_select_car = tk.Button(self.new_label_frame, text="Select Car", width=15,
+                                        command=self.show_delete_details)
+        self.btn_select_car.place(x=300, y=60)
+
+        # Separator
+        separator = tk.Frame(self.new_label_frame, bg='white', height=2, width=self.content_frame.winfo_width() -30)
+        separator.place(x=10, y=120)
+        self.car_details = tk.Frame(self.new_label_frame, bg='#484b4c',
+                                             width=self.content_frame.winfo_width() - 30,
+                                             height = self.content_frame.winfo_height() - 180)
+        # Car details
+        lbl_id = tk.Label(self.car_details, text="ID: ", bg='#484b4c', fg='white')
+        lbl_id.place(x=20, y=10)
+        self.lbl_id = tk.Label(self.car_details, text="12345", bg='#484b4c', fg="white")
+        self.lbl_id.place(x=120, y=10)
+
+        lbl_brand = tk.Label(self.car_details, text="Brand: ", bg='#484b4c', fg='white')
+        lbl_brand.place(x=20, y=30)
+        self.lbl_brand = tk.Label(self.car_details, text="BMW", bg='#484b4c', fg='white')
+        self.lbl_brand.place(x=120, y=30)
+
+        lbl_model = tk.Label(self.car_details, text="Model: ", bg='#484b4c', fg='white')
+        lbl_model.place(x=20, y=50)
+        self.lbl_model = tk.Label(self.car_details, text="2000", bg='#484b4c', fg='white')
+        self.lbl_model.place(x=120, y=50)
+
+        lbl_transmission = tk.Label(self.car_details, text="Transsmision: ", bg='#484b4c', fg='white')
+        lbl_transmission.place(x=20, y=70)
+        self.lbl_transmission = tk.Label(self.car_details, text="Manual", bg='#484b4c', fg='white')
+        self.lbl_transmission.place(x=120, y=70)
+
+        lbl_color = tk.Label(self.car_details, text="Color: ", bg='#484b4c', fg='white')
+        lbl_color.place(x=20, y=90)
+        self.lbl_color = tk.Label(self.car_details, text="BMW", bg='#484b4c', fg='white')
+        self.lbl_color.place(x=120, y=90)
+
+        lbl_price = tk.Label(self.car_details, text="Price: ", bg='#484b4c', fg='white')
+        lbl_price.place(x=20, y=110)
+        self.lbl_price = tk.Label(self.car_details, text="BMW", bg='#484b4c', fg='white')
+        self.lbl_price.place(x=120, y=110)
+
+        lbl_year = tk.Label(self.car_details, text="Year: ", bg='#484b4c', fg='white')
+        lbl_year.place(x=20, y=130)
+        self.lbl_year = tk.Label(self.car_details, text="BMW", bg='#484b4c', fg='white')
+        self.lbl_year.place(x=120, y=130)
+
+        lbl_km = tk.Label(self.car_details, text="Km: ", bg='#484b4c', fg='white')
+        lbl_km.place(x=20, y=150)
+        self.lbl_km = tk.Label(self.car_details, text="1200", bg='#484b4c', fg='white')
+        self.lbl_km.place(x=120, y=150)
+
+        lbl_car_type = tk.Label(self.car_details, text="Car type: ", bg='#484b4c', fg='white')
+        lbl_car_type.place(x=20, y=170)
+        self.lbl_car_type = tk.Label(self.car_details, text="1200", bg='#484b4c', fg='white')
+        self.lbl_car_type.place(x=120, y=170)
+
+        lbl_fuel = tk.Label(self.car_details, text="Fuel: ", bg='#484b4c', fg='white')
+        lbl_fuel.place(x=20, y=190)
+        self.lbl_fuel = tk.Label(self.car_details, text="1200", bg='#484b4c', fg='white')
+        self.lbl_fuel.place(x=120, y=190)
+
+        lbl_stock = tk.Label(self.car_details, text="Stock: ", bg='#484b4c', fg='white')
+        lbl_stock.place(x=20, y=210)
+        self.lbl_stock = tk.Label(self.car_details, text="1200", bg='#484b4c', fg='white')
+        self.lbl_stock.place(x=120, y=210)
+
+        # Delete Button
+        self.btn_delete_car = tk.Button(self.car_details, text="Delete Car", width=15)
+        self.btn_delete_car.place(x=600, y=250)
+
+        # brand, model, transmission, color, price, year, km, car_type, fuel, id, stock)
+        self.new_frame.place(x=0, y=0)
+
+    def show_delete_details(self):
+        if self.txt_select_car.get() != "":
+            self.car_details.place(x=10, y=130)  # brand, model, transmission, color, price, year, km, car_type, fuel, id, stock
+        else:
+            messagebox.showerror("Error!!!", "No se ha seleccionado ningun ID")
+
     def add_new_car(self): #  brand, model, transmission, color, price, year, km, car_type, fuel, id, stock
-        pass
+        if (self.validate_car_info()):
+            car_dict = {
+                'ID': self.txt_id.get(),
+                'Brand': self.txt_brand.get(),
+                'Model': self.txt_model.get(),
+                'Transmission': self.txt_transmission.get(),
+                'Color': self.txt_color.get(),
+                'Price': self.txt_price.get(),
+                'Year': self.txt_year.get(),
+                'Km': self.txt_km.get(),
+                'Car Type':self.txt_car_type.get(),
+                'Fuel': self.txt_car_fuel.get(),
+                'Stock': self.txt_stock.get()
+            }
+            self.data.add_car(car_dict)
+            messagebox.showinfo("Exito!", "EL nuevo carro se ha añadido!")
+            self.clear_fields()
+        else:
+            messagebox.showinfo("Mal!", "Algo anda mal")
 
     def validate_car_info(self):
         # no validar, precio, km, stock, y id
+        regex = r"[+-]?[0-9]+\.[0-9]+"
         if (self.txt_brand.get() == "" or self.txt_model.get() == "" or self.txt_transmission.get() == ""
                 or self.txt_color.get() == "" or self.txt_year.get() == "" or self.txt_car_type.get() == ""
-                or self.txt_car_fuel.get() == "" or self.txt_price.get() == "", self.txt_km.get() == ""
+                or self.txt_car_fuel.get() == "" or self.txt_price.get() == "" or self.txt_km.get() == ""
                 or self.txt_stock.get() == "" or self.txt_id.get() == ""):
+            messagebox.showerror("ERROR!!!", "Los campos no pueden estar vacios!")
             return False
-        elif (not self.txt_km.get().isnumeric() or not self.txt_stock.get().isnumeric() or not self.txt_id.get().isnumeric()):
-
-        elif (not self.txt_km.get().isnumeric() and not self.txt_stock.get().isnumeric() and not self.txt_id.get().isnumeric()):
-
+        # elif (not self.txt_km.get().isnumeric() or not self.txt_stock.get().isnumeric() or not self.txt_id.get().isnumeric()):
+        elif (not (self.txt_km.get().isnumeric() and self.txt_stock.get().isnumeric() and self.txt_id.get().isnumeric())):
+            messagebox.showerror("ERROR!!!", "Los campos de km, stock & id deben ser numeros enteros")
             return False
+        elif (not re.search(regex, self.txt_price.get())):
+            messagebox.showerror("ERROR!!!", "El campo de precio debe ser un numero decimal")
+            return False
+        else:
+            return True
+
+    def clear_fields(self):
+        self.txt_id.config(state='normal')
+        self.txt_id.delete(0, tk.END)
+        self.txt_id.insert(0, str(self.data.get_next_car_id()))
+        self.txt_id.config(state='readonly')
+        self.txt_model.set('')
+        self.txt_brand.set('')
+        self.txt_transmission.set('')
+        self.txt_color.set('')
+        self.txt_year.set('')
+        self.txt_car_type.set('')
+        self.txt_car_fuel.set('')
+
+        self.txt_price.delete(0, tk.END)
+        self.txt_km.delete(0, tk.END)
+        self.txt_stock.delete(0, tk.END)
+
 

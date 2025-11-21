@@ -27,23 +27,27 @@ class Interface:
         self.top_bar_frame.place(x=10, y=10)
 
         # left bar
-        self.left_bar_frame = tk.Frame(self.main_frame, width=self.width/5, height=self.height - 30 - self.height/6, bg='#4595BE')
+        self.left_bar_frame = tk.Frame(self.main_frame, width=self.width/5, height=self.height - 30 - self.height/6,
+                                       bg='#4595BE')
         self.left_bar_frame.place(x=10, y=20 + self.height/6)
 
         # content frame
-        self.content_frame = tk.Frame(self.main_frame, width=self.width - 30 - self.width/5, height=4 * self.height/6, bg='#484b4c')
+        self.content_frame = tk.Frame(self.main_frame, width=self.width - 30 - self.width/5, height=4 * self.height/6,
+                                      bg='#484b4c')
         self.content_frame.place(x=20 + self.width/5, y=20 + self.height/6)
 
         # bottom frame
-        self.bottom_frame = tk.Frame(self.main_frame, width=self.width - 30  - self.width/5, height=self.height/10, bg='#e4e6e8')
+        self.bottom_frame = tk.Frame(self.main_frame, width=self.width - 30  - self.width/5, height=self.height/10,
+                                     bg='#e4e6e8')
         self.bottom_frame.place(x=20 + self.width/5, y=30 + (5 * self.height)/6)
 
         self.data = Data() # main obj that contains all the info
+        self.data.load_data()
+        self.data.print_data()
         self.car_interface = Car_interface(self.data, self.content_frame, self.bottom_frame)
         self.sales_man_interface = Sales_man_interface(self.data, self.content_frame, self.bottom_frame)
         self.client_interface = Client_interface(self.data, self.content_frame, self.bottom_frame)
         self.sales_interface = Sales_interface(self.data, self.content_frame, self.bottom_frame)
-
 
     def run(self):
         # logo
@@ -57,10 +61,18 @@ class Interface:
         lbl_title = tk.Label(self.main_frame, text='BMW Delearship', bg='#EEEEEE', font=('Arial', 18, 'bold'))
         lbl_title.place(x=210, y=50)
 
+        save_logo = Image.open("./img/save.png")
+        save_logo = save_logo.resize((50, 50))
+        save_logo = ImageTk.PhotoImage(save_logo)
+        btn_save = tk.Button(self.main_frame, image=save_logo, text="Save", width=80, height=80, bg='#FFFFFF',
+                             command=self.data.save_data)
+        btn_save.place(x=680, y=25)
+
         exit_logo = Image.open("./img/salir_logo.png")
         exit_logo = exit_logo.resize((50, 50))
         exit_logo = ImageTk.PhotoImage(exit_logo)
-        btn_exit = tk.Button(self.main_frame, image=exit_logo, text="Exit", width=80, height=80, bg='#FFFFFF', command=self.exit_system)
+        btn_exit = tk.Button(self.main_frame, image=exit_logo, text="Exit", width=80, height=80, bg='#FFFFFF',
+                             command=self.exit_system)
         btn_exit.place(x=880, y=25)
 
         self.create_treeview()
@@ -132,7 +144,7 @@ class Interface:
         if item_text == "New Car":
             self.car_interface.new_car()
         elif item_text == "Delete Car":
-            pass
+            self.car_interface.delete_car()
             # messagebox.showinfo("Modelo", "BMW 3 Series: Deportivo y elegante.")
         elif item_text == "Edit Car":
             pass
@@ -190,12 +202,10 @@ class Interface:
         messagebox.showerror("Error", "Ha ocurrido un problema inesperado!!!")
 
 """
-    0. Hacer un programa, sencillo. solo 3 funciones, 
-        1. Recibe *argas
-        2. Recibe **kwargs
-        3. Manda llamar las 2 anteriores y tiene el ejemplo
-        
-    1. Arreglar la and de car_interface. debe funcionar como la or, sin copilot
+    T A R E A:
+        0. Como chingaso traer los detalles del carro, (Analizar como esta construido el software), como le hago 
+        para poder seleccionar el id de ese combo y traerme todos los detalles 
 """
+
 system = Interface()
 system.run()
