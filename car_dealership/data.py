@@ -1,5 +1,7 @@
 import os
 from operator import index
+from re import search
+
 import pandas as pd
 
 class Data:
@@ -35,8 +37,11 @@ class Data:
         print(self.df_salesmen)
         self.sales_man_id += 1
 
-    def search_car_id(self, id):
-        pass
+    def get_car_data_by_id(self, id):
+        return  self.df_cars.loc[self.df_cars['ID'] == id]
+
+    def delete_car_by_id(self, id):
+        self.df_cars = self.df_cars[self.df_cars['ID'] != id]
 
     def get_next_car_id(self):
         return self.car_id
@@ -56,14 +61,14 @@ class Data:
 
     def load_data(self):
         if os.path.exists("car_dealership.xlsx"):
-            df_dict = pd.read_excel("car_dealership.xlsx", sheet_name=None)
+            df_dict = pd.read_excel("car_dealership.xlsx", sheet_name=None, dtype=str)
             # df_dict es un diccionario con cada hoja como un DataFrame
             self.df_cars = df_dict["Cars"]
-            self.car_id = self.df_cars["ID"].max() + 1
+            self.car_id = int(self.df_cars["ID"].max()) + 1
             self.df_clients = df_dict["Clients"]
-            self.client_id = self.df_clients["ID"].max() + 1
+            self.client_id = int(self.df_clients["ID"].max()) + 1
             self.df_salesmen = df_dict["Salesmen"]
-            self.sales_man_id = self.df_salesmen["ID"].max() + 1
+            self.sales_man_id = int(self.df_salesmen["ID"].max()) + 1
 
     def print_data(self):
         print(self.df_cars)

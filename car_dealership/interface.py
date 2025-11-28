@@ -147,7 +147,7 @@ class Interface:
             self.car_interface.delete_car()
             # messagebox.showinfo("Modelo", "BMW 3 Series: Deportivo y elegante.")
         elif item_text == "Edit Car":
-            pass
+            self.car_interface.edit_car()
         elif item_text == "Search Car":
             pass
         elif item_text == "Print All Cars":
@@ -203,8 +203,10 @@ class Interface:
 
 """
     T A R E A:
-        0. Como chingaso traer los detalles del carro, (Analizar como esta construido el software), como le hago 
-        para poder seleccionar el id de ese combo y traerme todos los detalles 
+        0. Hacer el delete para todos los demas 
+            - client
+            - employee
+        1. Hablar al TEC y TCS sponsorship 
 """
 
 system = Interface()

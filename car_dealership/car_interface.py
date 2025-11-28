@@ -206,15 +206,42 @@ class Car_interface:
         self.lbl_stock.place(x=120, y=210)
 
         # Delete Button
-        self.btn_delete_car = tk.Button(self.car_details, text="Delete Car", width=15)
+        self.btn_delete_car = tk.Button(self.car_details, text="Delete Car", width=15, command=self.confirm_delete_car)
         self.btn_delete_car.place(x=600, y=250)
 
         # brand, model, transmission, color, price, year, km, car_type, fuel, id, stock)
         self.new_frame.place(x=0, y=0)
 
+    def confirm_delete_car(self):
+        answer = messagebox.askyesno("Confirmar borrado", "Desea borrar el carro? "
+                                                          "(esta opcion no se puede deshacer)")
+        if answer:
+            self.data.delete_car_by_id(self.txt_select_car.get())
+            self.txt_select_car["values"] = values=self.data.df_cars["ID"].tolist()
+            if len(values) > 0:
+                self.txt_select_car.current(0)
+            else:
+                self.txt_select_car.set("")
+            self.car_details.place_forget()
+            messagebox.showinfo("Borrado exitoso!", "El carro se ha eliminado con exito!!!")
+        else:
+            messagebox.showinfo("Sin cambios", "No se realizo ningun cambio.")
+
     def show_delete_details(self):
         if self.txt_select_car.get() != "":
             self.car_details.place(x=10, y=130)  # brand, model, transmission, color, price, year, km, car_type, fuel, id, stock
+            df_car = self.data.get_car_data_by_id(self.txt_select_car.get())
+            self.lbl_id.config(text= df_car['ID'].iloc[0])
+            self.lbl_brand.config(text=df_car['Brand'].iloc[0])
+            self.lbl_model.config(text=df_car['Model'].iloc[0])
+            self.lbl_transmission.config(text=df_car['Transmission'].iloc[0])
+            self.lbl_color.config(text=df_car['Color'].iloc[0])
+            self.lbl_price.config(text=df_car['Price'].iloc[0])
+            self.lbl_year.config(text=df_car['Year'].iloc[0])
+            self.lbl_km.config(text=df_car['Km'].iloc[0])
+            self.lbl_car_type.config(text=df_car['Car Type'].iloc[0])
+            self.lbl_fuel.config(text=df_car['Fuel'].iloc[0])
+            self.lbl_stock.config(text=df_car['Stock'].iloc[0])
         else:
             messagebox.showerror("Error!!!", "No se ha seleccionado ningun ID")
 
@@ -275,4 +302,153 @@ class Car_interface:
         self.txt_km.delete(0, tk.END)
         self.txt_stock.delete(0, tk.END)
 
+    def edit_car(self):
+        self.new_frame = tk.Frame(self.content_frame, width=self.content_frame.winfo_width(),
+                                  height=self.content_frame.winfo_height(), bg='#484b4c')
 
+        self.new_label_frame = tk.LabelFrame(self.new_frame, text="Edit Car",
+                                             bg='#484b4c',
+                                             width=self.content_frame.winfo_width() - 10,
+                                             height=self.content_frame.winfo_height() - 10,
+                                             fg='white')
+        self.new_label_frame.place(x=5, y=5)
+
+        # select car
+        lbl_select_car = tk.Label(self.new_label_frame, bg='#484b4c', fg="white", text='Select car: ')
+        lbl_select_car.place(x=20, y=60)
+        self.txt_select_car = ttk.Combobox(self.new_label_frame, width=18, state="readonly",
+                                           values=self.data.df_cars["ID"].tolist())
+        self.txt_select_car.place(x=120, y=60)
+
+        # Buttons
+        self.btn_select_car = tk.Button(self.new_label_frame, text="Select Car", width=15,
+                                        command=self.show_edit_details)
+        self.btn_select_car.place(x=300, y=60)
+
+        # Separator
+        separator = tk.Frame(self.new_label_frame, bg='white', height=2, width=self.content_frame.winfo_width() - 30)
+        separator.place(x=10, y=120)
+        self.car_details = tk.Frame(self.new_label_frame, bg='#484b4c',
+                                    width=self.content_frame.winfo_width() - 30,
+                                    height=self.content_frame.winfo_height() - 180)
+        # Car details
+        # Id
+        lbl_id = tk.Label(self.car_details, bg='#484b4c', fg="white", text='Id: ')
+        lbl_id.place(x=20, y=20)
+        self.txt_id = tk.Entry(self.car_details, width=20)
+        self.txt_id.insert(0, str(self.data.get_next_car_id()))
+        self.txt_id.config(state='readonly')
+        self.txt_id.place(x=120, y=20)
+
+        # Brand
+        lbl_brand = tk.Label(self.car_details, bg='#484b4c', fg="white", text='Brand: ')
+        lbl_brand.place(x=20, y=60)
+        self.txt_brand = ttk.Combobox(self.car_details, width=18, state="readonly", values=list(self.models.keys()))
+        self.txt_brand.place(x=120, y=60)
+
+        self.txt_brand.bind('<<ComboboxSelected>>', self.update_models)  # bind update_models() to combo brand event
+
+        # Model
+        lbl_model = tk.Label(self.car_details, bg='#484b4c', fg="white", text='Model: ')
+        lbl_model.place(x=350, y=60)
+        self.txt_model = ttk.Combobox(self.car_details, width=18, state="readonly")
+        self.txt_model.place(x=450, y=60)
+
+        # Transmission
+        lbl_transmission = tk.Label(self.car_details, bg='#484b4c', fg="white", text='Transmission: ')
+        lbl_transmission.place(x=20, y=90)
+        self.txt_transmission = ttk.Combobox(self.car_details, values=['Manual', 'Automatic'],
+                                             state="readonly", width=18)
+        self.txt_transmission.place(x=120, y=90)
+
+        # Color
+        lbl_color = tk.Label(self.car_details, bg='#484b4c', fg="white", text='Color: ')
+        lbl_color.place(x=350, y=90)
+        self.txt_color = ttk.Combobox(self.car_details, width=18, values=['Red', 'White', 'Black', 'Blue', 'Grey'],
+                                      state="readonly")
+        self.txt_color.place(x=450, y=90)
+
+        # Price
+        lbl_price = tk.Label(self.car_details, bg='#484b4c', fg="white", text='Price: ')
+        lbl_price.place(x=20, y=120)
+        self.txt_price = tk.Entry(self.car_details, width=20)
+        self.txt_price.place(x=120, y=120)
+
+        # Year
+        lbl_year = tk.Label(self.car_details, bg='#484b4c', fg="white", text='Year: ')
+        lbl_year.place(x=350, y=120)
+        self.txt_year = ttk.Combobox(self.car_details, width=18,
+                                     values=['2020', '2021', '2022', '2023', '2024', '2025'],
+                                     state="readonly")
+        self.txt_year.place(x=450, y=120)
+
+        # Km
+        lbl_km = tk.Label(self.car_details, bg='#484b4c', fg="white", text='Km: ')
+        lbl_km.place(x=20, y=150)
+        self.txt_km = tk.Entry(self.car_details, width=20)
+        self.txt_km.place(x=120, y=150)
+
+        # Car Type
+        lbl_car_type = tk.Label(self.car_details, bg='#484b4c', fg="white", text='Car type: ')
+        lbl_car_type.place(x=350, y=150)
+        self.txt_car_type = ttk.Combobox(self.car_details, width=18, values=['Sedan', 'SUV', 'Coupe', 'Sport'],
+                                         state="readonly")
+        self.txt_car_type.place(x=450, y=150)
+
+        # Fuel
+        lbl_fuel = tk.Label(self.car_details, bg='#484b4c', fg="white", text='Fuel: ')
+        lbl_fuel.place(x=20, y=180)
+        self.txt_car_fuel = ttk.Combobox(self.car_details, width=18, values=['Gas', 'Electric', 'Hybrid', 'Diesel'],
+                                         state="readonly")
+        self.txt_car_fuel.place(x=120, y=180)
+
+        # Stock
+        lbl_stock = tk.Label(self.car_details, bg='#484b4c', fg="white", text='Stock: ')
+        lbl_stock.place(x=350, y=180)
+        self.txt_stock = tk.Entry(self.car_details, width=20)
+        self.txt_stock.place(x=450, y=180)
+
+        # Delete Button
+        self.btn_edit_car = tk.Button(self.car_details, text="Edit Car", width=15, command=self.confirm_edit_car)
+        self.btn_edit_car.place(x=600, y=250)
+
+        # brand, model, transmission, color, price, year, km, car_type, fuel, id, stock)
+        self.new_frame.place(x=0, y=0)
+
+    def show_edit_details(self):
+        if self.txt_select_car.get() != "":
+            self.car_details.place(x=10, y=130)  # brand, model, transmission, color, price, year, km, car_type, fuel, id, stock
+            df_car = self.data.get_car_data_by_id(self.txt_select_car.get())
+            self.txt_id.config(state='normal')
+            self.txt_id.delete(0, tk.END)
+            self.txt_id.insert(0, df_car['ID'].iloc[0])
+            self.txt_id.config(state='readonly')
+            self.txt_brand.set(df_car['Brand'].iloc[0])
+            self.txt_model.set(df_car['Model'].iloc[0])
+            self.txt_transmission.set(df_car['Transmission'].iloc[0])
+            self.txt_color.set(df_car['Color'].iloc[0])
+            self.txt_price.delete(0, tk.END)
+            self.txt_price.insert(0, df_car['Price'].iloc[0])
+            self.txt_year.set(df_car['Year'].iloc[0])
+            self.txt_km.delete(0, tk.END)
+            self.txt_km.insert(0, df_car['Km'].iloc[0])
+            self.txt_car_type.set(df_car['Car Type'].iloc[0])
+            self.txt_car_fuel.set(df_car['Fuel'].iloc[0])
+            self.txt_stock.delete(0, tk.END)
+            self.txt_stock.insert(0, df_car['Stock'].iloc[0])
+        else:
+            messagebox.showerror("Error!!!", "No se ha seleccionado ningun ID")
+
+    def confirm_edit_car(self):
+        answer = messagebox.askyesno("Confirmar edicion", "Desea editar el carro? ")
+        if answer:
+            self.data.delete_car_by_id(self.txt_select_car.get())
+            self.txt_select_car["values"] = values=self.data.df_cars["ID"].tolist()
+            if len(values) > 0:
+                self.txt_select_car.current(0)
+            else:
+                self.txt_select_car.set("")
+            self.car_details.place_forget()
+            messagebox.showinfo("Se edito con exito!", "El carro se ha editado con exito!!!")
+        else:
+            messagebox.showinfo("Sin cambios", "No se realizo ningun cambio.")
