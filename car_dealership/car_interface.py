@@ -124,7 +124,7 @@ class Car_interface:
         self.new_frame = tk.Frame(self.content_frame, width=self.content_frame.winfo_width(),
                                   height = self.content_frame.winfo_height(), bg='#484b4c')
 
-        self.new_label_frame = tk.LabelFrame(self.new_frame, text="New Car",
+        self.new_label_frame = tk.LabelFrame(self.new_frame, text="Delete Car",
                                              bg='#484b4c',
                                              width=self.content_frame.winfo_width() - 10,
                                              height = self.content_frame.winfo_height() - 10,
@@ -442,13 +442,23 @@ class Car_interface:
     def confirm_edit_car(self):
         answer = messagebox.askyesno("Confirmar edicion", "Desea editar el carro? ")
         if answer:
-            self.data.delete_car_by_id(self.txt_select_car.get())
-            self.txt_select_car["values"] = values=self.data.df_cars["ID"].tolist()
-            if len(values) > 0:
-                self.txt_select_car.current(0)
+            if (self.validate_car_info()):
+                car_dict = {
+                    'ID': self.txt_id.get(),
+                    'Brand': self.txt_brand.get(),
+                    'Model': self.txt_model.get(),
+                    'Transmission': self.txt_transmission.get(),
+                    'Color': self.txt_color.get(),
+                    'Price': self.txt_price.get(),
+                    'Year': self.txt_year.get(),
+                    'Km': self.txt_km.get(),
+                    'Car Type': self.txt_car_type.get(),
+                    'Fuel': self.txt_car_fuel.get(),
+                    'Stock': self.txt_stock.get()
+                }
+                self.data.edit_car(car_dict)
+                messagebox.showinfo("Se edito con exito!", "El carro se ha editado con exito!!!")
             else:
-                self.txt_select_car.set("")
-            self.car_details.place_forget()
-            messagebox.showinfo("Se edito con exito!", "El carro se ha editado con exito!!!")
+                messagebox.showinfo("Mal!", "Algo anda mal")
         else:
             messagebox.showinfo("Sin cambios", "No se realizo ningun cambio.")

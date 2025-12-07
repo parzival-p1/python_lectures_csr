@@ -22,26 +22,48 @@ class Data:
     def add_car(self, new_car):
         new_index = len(self.df_cars)
         self.df_cars.loc[new_index] = list(new_car.values())
-        print(self.df_cars)
+        print("Estoy en add car",self.df_cars)
         self.car_id += 1
 
     def add_client(self, new_client):
         new_index = len(self.df_clients)
         self.df_clients.loc[new_index] = list(new_client.values())
-        print(self.df_clients)
+        # print("Estoy en add_client", self.df_clients)
         self.client_id += 1
 
     def add_salesman(self, new_salesman):
         new_index = len(self.df_salesmen)
         self.df_salesmen.loc[new_index] = list(new_salesman.values())
-        print(self.df_salesmen)
+        # print("Estoy en salesman", self.df_salesmen)
         self.sales_man_id += 1
 
     def get_car_data_by_id(self, id):
         return  self.df_cars.loc[self.df_cars['ID'] == id]
 
+    def get_client_data_by_id(self, id):
+        return  self.df_clients.loc[self.df_clients['ID'] == id]
+
+    def get_salesman_data_by_id(self, id):
+        return  self.df_salesmen.loc[self.df_salesmen['ID'] == id]
+
     def delete_car_by_id(self, id):
         self.df_cars = self.df_cars[self.df_cars['ID'] != id]
+        print(self.df_cars)
+
+    def delete_client_by_id(self, id):
+        self.df_clients = self.df_clients[self.df_clients['ID'] != id]
+
+    def delete_salesman_by_id(self, id):
+        self.df_salesmen = self.df_salesmen[self.df_salesmen['ID'] != id]
+
+    def edit_car(self, df_update):
+        self.df_cars.loc[self.df_cars["ID"] == df_update['ID'], list(df_update.keys())] = list(df_update.values()) # REVISAR EL JUEVES
+
+    def edit_client(self, df_update):
+        self.df_clients.loc[self.df_clients["ID"] == df_update['ID'], list(df_update.keys())] = list(df_update.values())
+
+    def edit_salesman(self, df_update):
+        self.df_salesmen.loc[self.df_salesmen["ID"] == df_update['ID'], list(df_update.keys())] = list(df_update.values())
 
     def get_next_car_id(self):
         return self.car_id

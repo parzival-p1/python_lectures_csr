@@ -43,7 +43,7 @@ class Interface:
 
         self.data = Data() # main obj that contains all the info
         self.data.load_data()
-        self.data.print_data()
+        # self.data.print_data()
         self.car_interface = Car_interface(self.data, self.content_frame, self.bottom_frame)
         self.sales_man_interface = Sales_man_interface(self.data, self.content_frame, self.bottom_frame)
         self.client_interface = Client_interface(self.data, self.content_frame, self.bottom_frame)
@@ -159,9 +159,9 @@ class Interface:
         if item_text == "New Employee":
             self.sales_man_interface.new_employee()
         elif item_text == "Delete Employee":
-            pass
+            self.sales_man_interface.delete_salesman()
         elif item_text == "Edit Employee":
-            pass
+            self.sales_man_interface.edit_salesman()
         elif item_text == "Search Employee":
             pass
         elif item_text == "Print All Employees":
@@ -173,9 +173,9 @@ class Interface:
         if item_text == "New Client":
             self.client_interface.new_client()
         elif item_text == "Delete Client":
-            pass
+            self.client_interface.delete_client()
         elif item_text == "Edit Client":
-            pass
+            self.client_interface.edit_client()
         elif item_text == "Search Client":
             pass
         elif item_text == "Print All Clients":
@@ -203,10 +203,9 @@ class Interface:
 
 """
     T A R E A:
-        0. Hacer el delete para todos los demas 
-            - client
-            - employee
-        1. Hablar al TEC y TCS sponsorship 
+        0. DAR PROPUESTA DE COMO MEJORARIA EL CODIGO: QUE HACER, CON SUS PASOS, Y SUS DETALLES (SIN COSAS GENERICAS)
+        1. DAR PROPUESTA DE COMO DEBE SER LA INTERFAZ PARA EL MENU DE SEARCH: CLIENT, SALESMAN, COMO DEBE SER EL FLUJO
+        DE LA INFORMACION
 """
 
 system = Interface()

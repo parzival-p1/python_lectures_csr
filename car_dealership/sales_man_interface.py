@@ -158,5 +158,244 @@ class Sales_man_interface:
         self.txt_address.delete(0, tk.END)
         self.txt_bday.delete(0, tk.END)
 
-    def validate_client_info(self):
-        pass
+    def delete_salesman(self):
+        self.new_frame = tk.Frame(self.content_frame, width=self.content_frame.winfo_width(),
+                                  height = self.content_frame.winfo_height(), bg='#484b4c')
+
+        self.new_label_frame = tk.LabelFrame(self.new_frame, text="Delete Employee",
+                                             bg='#484b4c',
+                                             width=self.content_frame.winfo_width() - 10,
+                                             height = self.content_frame.winfo_height() - 10,
+                                             fg='white')
+        self.new_label_frame.place(x=5, y=5)
+
+        # select employee
+        lbl_select_employee = tk.Label(self.new_label_frame, bg='#484b4c', fg="white", text='Select employee: ')
+        lbl_select_employee.place(x=20, y=60)
+        self.txt_select_employee = ttk.Combobox(self.new_label_frame, width=18, state="readonly",
+                                           values=self.data.df_salesmen["ID"].tolist())
+        self.txt_select_employee.place(x=120, y=60)
+
+        # Buttons
+        self.btn_select_salesman = tk.Button(self.new_label_frame, text="Select Employee", width=15,
+                                        command=self.show_delete_details)
+        self.btn_select_salesman.place(x=300, y=60)
+
+        # Separator
+        separator = tk.Frame(self.new_label_frame, bg='white', height=2, width=self.content_frame.winfo_width() -30)
+        separator.place(x=10, y=120)
+        self.salesman_details = tk.Frame(self.new_label_frame, bg='#484b4c',
+                                             width=self.content_frame.winfo_width() - 30,
+                                             height = self.content_frame.winfo_height() - 180)
+
+        # Salesman details
+        lbl_id = tk.Label(self.salesman_details, text="ID: ", bg='#484b4c', fg='white')
+        lbl_id.place(x=20, y=10)
+        self.lbl_id = tk.Label(self.salesman_details, text="12345", bg='#484b4c', fg="white")
+        self.lbl_id.place(x=120, y=10)
+
+        lbl_name = tk.Label(self.salesman_details, text="Name: ", bg='#484b4c', fg='white')
+        lbl_name.place(x=20, y=30)
+        self.lbl_name = tk.Label(self.salesman_details, text="Name", bg='#484b4c', fg='white')
+        self.lbl_name.place(x=120, y=30)
+
+        lbl_last_name = tk.Label(self.salesman_details, text="Last name: ", bg='#484b4c', fg='white')
+        lbl_last_name.place(x=20, y=50)
+        self.lbl_last_name = tk.Label(self.salesman_details, text="2000", bg='#484b4c', fg='white')
+        self.lbl_last_name.place(x=120, y=50)
+
+        lbl_phone_number = tk.Label(self.salesman_details, text="Phone Number: ", bg='#484b4c', fg='white')
+        lbl_phone_number.place(x=20, y=70)
+        self.lbl_phone_number = tk.Label(self.salesman_details, text="Phone Number", bg='#484b4c', fg='white')
+        self.lbl_phone_number.place(x=120, y=70)
+
+        lbl_address = tk.Label(self.salesman_details, text="Address: ", bg='#484b4c', fg='white')
+        lbl_address.place(x=20, y=90)
+        self.lbl_address = tk.Label(self.salesman_details, text="Address", bg='#484b4c', fg='white')
+        self.lbl_address.place(x=120, y=90)
+
+        lbl_email = tk.Label(self.salesman_details, text="Email: ", bg='#484b4c', fg='white')
+        lbl_email.place(x=20, y=110)
+        self.lbl_email = tk.Label(self.salesman_details, text="Email", bg='#484b4c', fg='white')
+        self.lbl_email.place(x=120, y=110)
+
+        lbl_gender = tk.Label(self.salesman_details, text="Gender: ", bg='#484b4c', fg='white')
+        lbl_gender.place(x=20, y=130)
+        self.lbl_gender = tk.Label(self.salesman_details, text="Gender", bg='#484b4c', fg='white')
+        self.lbl_gender.place(x=120, y=130)
+
+        lbl_birthday = tk.Label(self.salesman_details, text="Birthday: ", bg='#484b4c', fg='white')
+        lbl_birthday.place(x=20, y=150)
+        self.lbl_birthday = tk.Label(self.salesman_details, text="Birthday", bg='#484b4c', fg='white')
+        self.lbl_birthday.place(x=120, y=150)
+
+        # Delete Button
+        self.btn_delete_salesman = tk.Button(self.salesman_details, text="Delete Salesman", width=15,
+                                           command=self.confirm_delete_salesman)
+        self.btn_delete_salesman.place(x=600, y=250)
+
+        self.new_frame.place(x=0, y=0)
+
+    def show_delete_details(self):
+        if self.txt_select_employee.get() != "":
+            self.salesman_details.place(x=10,
+                                      y=130)  # 'ID', 'Name', 'Last Name', 'Phone Number', 'Address', 'Email', 'Gender', 'Birthday'
+            df_salesman = self.data.get_salesman_data_by_id(self.txt_select_employee.get())
+            self.lbl_id.config(text=df_salesman['ID'].iloc[0])
+            self.lbl_name.config(text=df_salesman['Name'].iloc[0])
+            self.lbl_last_name.config(text=df_salesman['Last Name'].iloc[0])
+            self.lbl_phone_number.config(text=df_salesman['Phone Number'].iloc[0])
+            self.lbl_address.config(text=df_salesman['Address'].iloc[0])
+            self.lbl_email.config(text=df_salesman['Email'].iloc[0])
+            self.lbl_gender.config(text=df_salesman['Gender'].iloc[0])
+            self.lbl_birthday.config(text=df_salesman['Birthday'].iloc[0])
+        else:
+            messagebox.showerror("Error!!!", "No se ha seleccionado ningun Empleado")
+
+    def confirm_delete_salesman(self):
+        answer = messagebox.askyesno("Confirmar borrado", "Desea borrar el empleado? "
+                                                          "(esta opcion no se puede deshacer)")
+        if answer:
+            self.data.delete_salesman_by_id(self.txt_select_employee.get())
+            self.txt_select_employee["values"] = values=self.data.df_salesmen["ID"].tolist()
+            if len(values) > 0:
+                self.txt_select_employee.current(0)
+            else:
+                self.txt_select_employee.set("")
+            self.salesman_details.place_forget()
+            messagebox.showinfo("Borrado exitoso!", "El empleado se ha eliminado con exito!!!")
+        else:
+            messagebox.showinfo("Sin cambios", "No se realizo ningun cambio.")
+
+    def edit_salesman(self): # 'ID', 'Name', 'Last Name', 'Phone Number', 'Address', 'Email', 'Gender', 'Birthday
+        self.new_frame = tk.Frame(self.content_frame, width=self.content_frame.winfo_width(),
+                                  height=self.content_frame.winfo_height(), bg='#484b4c')
+
+        self.new_label_frame = tk.LabelFrame(self.new_frame, text="Edit Car",
+                                             bg='#484b4c',
+                                             width=self.content_frame.winfo_width() - 10,
+                                             height=self.content_frame.winfo_height() - 10,
+                                             fg='white')
+        self.new_label_frame.place(x=5, y=5)
+
+        # select salesman
+        lbl_select_salesman = tk.Label(self.new_label_frame, bg='#484b4c', fg="white", text='Select salesman: ')
+        lbl_select_salesman.place(x=20, y=60)
+        self.txt_select_salesman = ttk.Combobox(self.new_label_frame, width=18, state="readonly",
+                                           values=self.data.df_salesmen["ID"].tolist())
+        self.txt_select_salesman.place(x=120, y=60)
+
+        # Buttons
+        self.btn_select_salesman = tk.Button(self.new_label_frame, text="Select Salesman", width=15,
+                                        command=self.show_edit_details)
+        self.btn_select_salesman.place(x=300, y=60)
+
+        # Separator
+        separator = tk.Frame(self.new_label_frame, bg='white', height=2, width=self.content_frame.winfo_width() - 30)
+        separator.place(x=10, y=120)
+        self.salesman_details = tk.Frame(self.new_label_frame, bg='#484b4c',
+                                    width=self.content_frame.winfo_width() - 30,
+                                    height=self.content_frame.winfo_height() - 180)
+        # Salesman details
+        # Id
+        lbl_id = tk.Label(self.salesman_details, bg='#484b4c', fg="white", text='Id: ')
+        lbl_id.place(x=20, y=20)
+        self.txt_id = tk.Entry(self.salesman_details, width=20)
+        self.txt_id.insert(0, str(self.data.get_next_salesman_id()))
+        self.txt_id.config(state='readonly')
+        self.txt_id.place(x=120, y=20)
+
+        # Name
+        lbl_name = tk.Label(self.salesman_details, bg='#484b4c', fg="white", text='Name: ')
+        lbl_name.place(x=20, y=60)
+        self.txt_name = tk.Entry(self.salesman_details, width=18)
+        self.txt_name.place(x=120, y=60)
+
+        # Last name
+        lbl_last_name = tk.Label(self.salesman_details, bg='#484b4c', fg="white", text='Last name: ')
+        lbl_last_name.place(x=350, y=60)
+        self.txt_last_name = tk.Entry(self.salesman_details, width=18)
+        self.txt_last_name.place(x=450, y=60)
+
+        # Phone number
+        lbl_phone_number = tk.Label(self.salesman_details, bg='#484b4c', fg="white", text='Phone number: ')
+        lbl_phone_number.place(x=20, y=90)
+        self.txt_phone_number = tk.Entry(self.salesman_details, width=18)
+        self.txt_phone_number.place(x=120, y=90)
+
+        # Address
+        lbl_color = tk.Label(self.salesman_details, bg='#484b4c', fg="white", text='Address: ')
+        lbl_color.place(x=350, y=90)
+        self.txt_address = tk.Entry(self.salesman_details, width=18)
+        self.txt_address.place(x=450, y=90)
+
+        # Email
+        lbl_email = tk.Label(self.salesman_details, bg='#484b4c', fg="white", text='Email: ')
+        lbl_email.place(x=20, y=120)
+        self.txt_email = tk.Entry(self.salesman_details, width=20)
+        self.txt_email.place(x=120, y=120)
+
+        # Gender
+        lbl_gender = tk.Label(self.salesman_details, bg='#484b4c', fg="white", text='Gender: ')
+        lbl_gender.place(x=350, y=120)
+        self.txt_gender = ttk.Combobox(self.salesman_details, width=18,
+                                     values=["Female", "Male", "Other"], state='readonly')
+        self.txt_gender.place(x=450, y=120)
+
+        # Birthday
+        lbl_birthday = tk.Label(self.salesman_details, bg='#484b4c', fg="white", text='Birthday: ')
+        lbl_birthday.place(x=350, y=120)
+        self.txt_bday = DateEntry(self.salesman_details, width=20,  background='#4595BE', foreground='white', borderwidth=2,
+                          date_pattern='dd/mm/yyyy')
+        self.txt_bday.place(x=450, y=120)
+
+        # Edit Button
+        self.btn_edit_salesman = tk.Button(self.salesman_details, text="Edit Employee", width=15, command=self.confirm_edit_salesman)
+        self.btn_edit_salesman.place(x=600, y=250)
+
+        self.new_frame.place(x=0, y=0)
+
+    def show_edit_details(self):
+        if self.txt_select_salesman.get() != "":
+            self.salesman_details.place(x=10, y=130)
+            df_salesman = self.data.get_salesman_data_by_id(self.txt_select_salesman.get())
+            self.txt_id.config(state='normal')
+            self.txt_id.delete(0, tk.END)
+            self.txt_id.insert(0, df_salesman['ID'].iloc[0])
+            self.txt_id.config(state='readonly')
+            self.txt_name.delete(0, tk.END)
+            self.txt_name.insert(0, df_salesman['Name'].iloc[0])
+            self.txt_last_name.delete(0, tk.END)
+            self.txt_last_name.insert(0, df_salesman['Last Name'].iloc[0])
+            self.txt_phone_number.delete(0, tk.END)
+            self.txt_phone_number.insert(0, df_salesman['Phone Number'].iloc[0])
+            self.txt_address.delete(0, tk.END)
+            self.txt_address.insert(0, df_salesman['Address'].iloc[0])
+            self.txt_email.delete(0, tk.END)
+            self.txt_email.insert(0, df_salesman['Email'].iloc[0])
+            self.txt_gender.set(df_salesman['Gender'].iloc[0])
+            self.txt_bday.delete(0, tk.END)
+            self.txt_bday.insert(0, df_salesman['Birthday'].iloc[0])
+        else:
+            messagebox.showerror("Error!!!", "No se ha seleccionado ningun ID")
+
+    def confirm_edit_salesman(self):
+        answer = messagebox.askyesno("Confirmar edicion", "Desea editar al empleado? ")
+        if answer:
+            if (self.validate_salesman_info()):
+                sales_man_dict = {
+                    'ID': self.txt_id.get(),
+                    'Name': self.txt_name.get(),
+                    'Last Name': self.txt_last_name.get(),
+                    'Phone number': self.txt_phone_number.get(),
+                    'Address': self.txt_address.get(),
+                    'Email': self.txt_email.get(),
+                    'Gender': self.txt_gender.get(),
+                    'Birthday': self.txt_bday.get(),
+                }
+                self.data.edit_salesman(sales_man_dict)
+                messagebox.showinfo("Se edito con exito!", "El empleado se ha editado con exito!!!")
+            else:
+                messagebox.showinfo("Mal!", "Algo anda mal")
+        else:
+            messagebox.showinfo("Sin cambios", "No se realizo ningun cambio.")
