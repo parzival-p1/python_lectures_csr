@@ -107,7 +107,6 @@ class Interface:
         self.tree.insert("cars", "end", text="New Car")
         self.tree.insert("cars", "end", text="Delete Car")
         self.tree.insert("cars", "end", text="Edit Car")
-        self.tree.insert("cars", "end", text="Search Car")
         self.tree.insert("cars", "end", text="Print All Cars")
 
         # Employees
@@ -115,7 +114,6 @@ class Interface:
         self.tree.insert("employees", "end", text="New Employee")
         self.tree.insert("employees", "end", text="Delete Employee")
         self.tree.insert("employees", "end", text="Edit Employee")
-        self.tree.insert("employees", "end", text="Search Employee")
         self.tree.insert("employees", "end", text="Print All Employees")
 
         # Clients
@@ -123,7 +121,6 @@ class Interface:
         self.tree.insert("clients", "end", text="New Client")
         self.tree.insert("clients", "end", text="Delete Client")
         self.tree.insert("clients", "end", text="Edit Client")
-        self.tree.insert("clients", "end", text="Search Client")
         self.tree.insert("clients", "end", text="Print All Clients")
 
         # Sales
@@ -131,7 +128,6 @@ class Interface:
         self.tree.insert("sales", "end", text="New Sale")
         self.tree.insert("sales", "end", text="Delete Sale")
         self.tree.insert("sales", "end", text="Edit Sale")
-        self.tree.insert("sales", "end", text="Search Sale")
         self.tree.insert("sales", "end", text="Print All Sales")
 
         self.tree.bind("<<TreeviewSelect>>", self.on_tree_select)
@@ -148,10 +144,8 @@ class Interface:
             # messagebox.showinfo("Modelo", "BMW 3 Series: Deportivo y elegante.")
         elif item_text == "Edit Car":
             self.car_interface.edit_car()
-        elif item_text == "Search Car":
-            pass
         elif item_text == "Print All Cars":
-            pass
+            self.car_interface.print_all_cars()
         else:
             pass
 
@@ -162,8 +156,6 @@ class Interface:
             self.sales_man_interface.delete_salesman()
         elif item_text == "Edit Employee":
             self.sales_man_interface.edit_salesman()
-        elif item_text == "Search Employee":
-            pass
         elif item_text == "Print All Employees":
             pass
         else:
@@ -176,8 +168,6 @@ class Interface:
             self.client_interface.delete_client()
         elif item_text == "Edit Client":
             self.client_interface.edit_client()
-        elif item_text == "Search Client":
-            pass
         elif item_text == "Print All Clients":
             pass
         else:
@@ -190,8 +180,6 @@ class Interface:
             pass
         elif item_text == "Edit Sale":
             pass
-        elif item_text == "Search Sale":
-            pass
         elif item_text == "Print All Sales":
             pass
         else:
@@ -203,10 +191,8 @@ class Interface:
 
 """
     T A R E A:
-        0. DAR PROPUESTA DE COMO MEJORARIA EL CODIGO: QUE HACER, CON SUS PASOS, Y SUS DETALLES (SIN COSAS GENERICAS)
-        1. DAR PROPUESTA DE COMO DEBE SER LA INTERFAZ PARA EL MENU DE SEARCH: CLIENT, SALESMAN, COMO DEBE SER EL FLUJO
-        DE LA INFORMACION
-"""
+        0. COMO UNIFICAR LA FUNC DE filter_table() ? (no es iterando)
+         """
 
 system = Interface()
 system.run()
