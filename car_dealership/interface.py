@@ -157,7 +157,7 @@ class Interface:
         elif item_text == "Edit Employee":
             self.sales_man_interface.edit_salesman()
         elif item_text == "Print All Employees":
-            pass
+            self.sales_man_interface.print_all_employees()
         else:
             pass
 

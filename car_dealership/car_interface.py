@@ -22,7 +22,9 @@ class Car_interface:
                        'Maserati' : ['Grecale', 'MODENA'],
                        'Lexus' : ['IS', 'ES', 'LS']
                        }
+        self.filtered_df = self.data.df_cars
         self.table = None
+        self.dict_filter = {}
 
     def update_models(self, event):
         brand = self.txt_brand.get()
@@ -565,27 +567,34 @@ class Car_interface:
             self.table.heading(col, text=col)
             self.table.column(col, anchor="center", width=60)
 
-        self.fill_table(self.data.df_cars)
+        self.fill_table()
 
         self.new_frame.place(x=0, y=0)
 
     # Función que se ejecuta al seleccionar un valor
     def filter_table(self, event, selected, column):
-        if selected == 'All':
-            filtered_df = self.data.df_cars
+        if selected == 'All' :
+            self.filtered_df = self.data.df_cars
+            del self.dict_filter[column]
+            for key, value in self.dict_filter.items():
+                self.filtered_df = self.filtered_df[self.filtered_df[key] == value]
         else:
-            filtered_df = self.data.df_cars[self.data.df_cars[column] == selected]
-        self.fill_table(filtered_df)
+            self.filtered_df = self.filtered_df[self.filtered_df[column] == selected]
+            self.dict_filter[column] = selected
+        self.fill_table()
 
-    def fill_table(self, dataframe):
+    def fill_table(self):
         # Limpiar tabla
         for item in self.table.get_children():
             self.table.delete(item)
         # Insertar filas
-        for _, row in dataframe.iterrows():
+        for _, row in self.filtered_df.iterrows():
             self.table.insert("", "end", values=list(row))
 
 """
-    0. NO CODIFICAR: solo dar soluciones escritas al problema, un resumen de como solucionar el filtrado del filtrado
-    y el desfiltrado del filtrado.
+    0. Volver a repasar diccionarios en ppython
+    1. Como agregar un par llave valor
+    2. Como ciclar a traves de estos pares (recibiendo llave y valor) "hay un metodo"
+    3. Como elimino un par, 
+    4. Agregar datos al Excel (revisar whatsapp), SALESMAN AND CLIENTS
 """

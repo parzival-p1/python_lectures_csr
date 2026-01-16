@@ -13,7 +13,6 @@ class Data:
         self.df_clients = pd.DataFrame(columns = self.client_columns)
         self.salesman_columns = ['ID', 'Name', 'Last Name', 'Phone Number', 'Address', 'Email', 'Gender', 'Birthday']
         self.df_salesmen = pd.DataFrame(columns = self.salesman_columns)
-
         self.car_id = 1000
         self.client_id = 2000
         self.sales_id = 3000
