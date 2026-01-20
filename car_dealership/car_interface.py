@@ -573,14 +573,15 @@ class Car_interface:
 
     # Función que se ejecuta al seleccionar un valor
     def filter_table(self, event, selected, column):
+        self.filtered_df = self.data.df_cars
         if selected == 'All' :
-            self.filtered_df = self.data.df_cars
-            del self.dict_filter[column]
-            for key, value in self.dict_filter.items():
-                self.filtered_df = self.filtered_df[self.filtered_df[key] == value]
+            if column in self.dict_filter:
+                del self.dict_filter[column]
         else:
-            self.filtered_df = self.filtered_df[self.filtered_df[column] == selected]
             self.dict_filter[column] = selected
+        for key, value in self.dict_filter.items():
+            self.filtered_df = self.filtered_df[self.filtered_df[key] == value]
+
         self.fill_table()
 
     def fill_table(self):
@@ -591,10 +592,3 @@ class Car_interface:
         for _, row in self.filtered_df.iterrows():
             self.table.insert("", "end", values=list(row))
 
-"""
-    0. Volver a repasar diccionarios en ppython
-    1. Como agregar un par llave valor
-    2. Como ciclar a traves de estos pares (recibiendo llave y valor) "hay un metodo"
-    3. Como elimino un par, 
-    4. Agregar datos al Excel (revisar whatsapp), SALESMAN AND CLIENTS
-"""

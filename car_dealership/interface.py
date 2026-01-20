@@ -169,7 +169,7 @@ class Interface:
         elif item_text == "Edit Client":
             self.client_interface.edit_client()
         elif item_text == "Print All Clients":
-            pass
+            self.client_interface.print_all_clients()
         else:
             pass
 
@@ -191,7 +191,9 @@ class Interface:
 
 """
     T A R E A:
-        0. COMO UNIFICAR LA FUNC DE filter_table() ? (no es iterando)
+        0. Duplicar entradas en excel, NOMBRE, APELLIDA AÑO, (POCAS)
+        1. Filtrar por month en client_interface OJO EL FILTRO VIENE CON NOMBRE EL DATA FRAME VIENE CON NUMERO
+        SE PUEDE PREGUNTAR CON UN BUEN PROMPT A COPILOT CON SOLUCION REDUCIDAD.
          """
 
 system = Interface()

@@ -16,6 +16,9 @@ class Client_interface:
         self.bottom_frame = bottom_frame
         self.content_frame.update_idletasks()  # Asegura que el layout esté calculado
         self.bottom_frame.update_idletasks()  # Asegura que el layout esté calculado
+        self.dict_filter = { }
+        self.filtered_df = self.data.df_clients
+        self.table = None
 
     def new_client(self):
         self.new_frame = tk.Frame(self.content_frame, width=self.content_frame.winfo_width(),
@@ -388,4 +391,114 @@ class Client_interface:
         else:
             messagebox.showinfo("Sin cambios", "No se realizo ningun cambio.")
 
+    def print_all_clients(self):
+        self.new_frame = tk.Frame(self.content_frame, width=self.content_frame.winfo_width(),
+                                  height = self.content_frame.winfo_height(), bg='#484b4c')
 
+        self.new_label_frame = tk.LabelFrame(self.new_frame, text="List of Clients",
+                                             bg='#484b4c',
+                                             width=self.content_frame.winfo_width() - 10,
+                                             height = self.content_frame.winfo_height() - 10,
+                                             fg='white')
+        self.new_label_frame.place(x=5, y=5)
+
+        # Name
+        lbl_filter_name = tk.Label(self.new_label_frame, text="Name", background='#484b4c', foreground='white')
+        lbl_filter_name.place(x=10, y=40)
+        name_list = self.data.df_clients['Name'].unique().tolist()
+        name_list.append('All')
+        self.txt_filter_name = ttk.Combobox(self.new_label_frame, width=10, values=name_list, state="readonly")
+        self.txt_filter_name.place(x=10, y=60)
+        # lambda event: self.filter_table(event, "mi_parametro")
+        self.txt_filter_name.bind("<<ComboboxSelected>>",
+                                   lambda event: self.filter_table(event, self.txt_filter_name.get(), "Name"))
+
+        # Last Name
+        lbl_filter_last_name = tk.Label(self.new_label_frame, text="Last name", background='#484b4c', foreground='white')
+        lbl_filter_last_name.place(x=100, y=40)
+        last_name_list = self.data.df_clients['Last Name'].unique().tolist()
+        last_name_list.append('All')
+        self.txt_filter_last_name = ttk.Combobox(self.new_label_frame, width=10, values=last_name_list, state="readonly")
+        self.txt_filter_last_name.place(x=100, y=60)
+        # lambda event: self.filter_table(event, "mi_parametro")
+        self.txt_filter_last_name.bind("<<ComboboxSelected>>",
+                                   lambda event: self.filter_table(event, self.txt_filter_last_name.get(), "Last Name"))
+
+        # Gender
+        lbl_filter_gender = tk.Label(self.new_label_frame, text="Gender", background='#484b4c', foreground='white')
+        lbl_filter_gender.place(x=190, y=40)
+        gender_list = self.data.df_clients['Gender'].unique().tolist()
+        gender_list.append('All')
+        self.txt_filter_gender = ttk.Combobox(self.new_label_frame, width=10, values=gender_list, state="readonly")
+        self.txt_filter_gender.place(x=190, y=60)
+        # lambda event: self.filter_table(event, "mi_parametro")
+        self.txt_filter_gender.bind("<<ComboboxSelected>>",
+                                   lambda event: self.filter_table(event, self.txt_filter_gender.get(), "Gender"))
+
+        # Birthday
+        lbl_filter_bday = tk.Label(self.new_label_frame, text="Birthday", background='#484b4c', foreground='white')
+        lbl_filter_bday.place(x=280, y=10)
+        # Month
+        lbl_filter_month = tk.Label(self.new_label_frame, text="Month", background='#484b4c', foreground='white')
+        lbl_filter_month.place(x=280, y=40)
+        month_list = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
+        # month_list = pd.to_datetime(self.data.df_salesmen["Birthday"], format="mixed", dayfirst=True).dt.month_name(locale="es_ES").tolist()
+        month_list.append('All')
+        self.txt_filter_month = ttk.Combobox(self.new_label_frame, width=10, values=month_list, state="readonly")
+        self.txt_filter_month.place(x=280, y=60)
+        # lambda event: self.filter_table(event, "mi_parametro")
+        self.txt_filter_month.bind("<<ComboboxSelected>>",
+                                   lambda event: self.filter_table(event, self.txt_filter_month.get(), "Month"))
+
+        # Year
+        lbl_filter_year = tk.Label(self.new_label_frame, text="Year", background='#484b4c', foreground='white')
+        lbl_filter_year.place(x=370, y=40)
+        year_list = sorted(set(pd.to_datetime(self.data.df_clients["Birthday"], format="mixed",
+                                   dayfirst=True).dt.year.tolist()))
+        year_list.append('All')
+        self.txt_filter_year = ttk.Combobox(self.new_label_frame, width=10, values=year_list, state="readonly")
+        self.txt_filter_year.place(x=370, y=60)
+        # lambda event: self.filter_table(event, "mi_parametro")
+        self.txt_filter_year.bind("<<ComboboxSelected>>",
+                                   lambda event: self.filter_table(event, self.txt_filter_year.get(), "Year"))
+
+        self.table = ttk.Treeview(self.new_label_frame, columns=('ID', 'Name', 'Last Name', 'Phone Number', 'Address',
+                                                                 'Email', 'Gender', 'Birthday'),
+                                  show="headings", height=10)
+        self.table.place(x=10, y=100)
+
+        # Definir encabezados
+        for col in ('ID', 'Name', 'Last Name', 'Phone Number', 'Address', 'Email', 'Gender', 'Birthday'):
+            self.table.heading(col, text=col)
+            self.table.column(col, anchor="center", width=90)
+
+        self.fill_table()
+
+
+        self.new_frame.place(x=0, y=0)
+
+    def filter_table(self, event, selected, column):
+        self.filtered_df = self.data.df_clients
+        self.filtered_df["Birthday"] = pd.to_datetime(self.filtered_df["Birthday"], format="%d/%m/%Y", errors="coerce")
+        if selected == 'All' :
+            if column in self.dict_filter:
+                del self.dict_filter[column]
+        else:
+            self.dict_filter[column] = selected
+        for key, value in self.dict_filter.items():
+            if key == "Year":
+                self.filtered_df = self.filtered_df[self.filtered_df["Birthday"].dt.year == int(value)]
+            elif key == "Month":
+                pass
+               # AQUI VA LA SOLUCION
+            else:
+                self.filtered_df = self.filtered_df[self.filtered_df[key] == value]
+        self.fill_table()
+
+    def fill_table(self):
+        # Limpiar tabla
+        for item in self.table.get_children():
+            self.table.delete(item)
+        # Insertar filas
+        for _, row in self.filtered_df.iterrows():
+            self.table.insert("", "end", values=list(row))

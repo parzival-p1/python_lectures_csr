@@ -492,7 +492,8 @@ class Sales_man_interface:
     def filter_table(self, event, selected, column):
         if selected == 'All' :
             self.filtered_df = self.data.df_cars
-            del self.dict_filter[column]
+            if column in self.dict_filter:
+                del self.dict_filter[column]
             for key, value in self.dict_filter.items():
                 self.filtered_df = self.filtered_df[self.filtered_df[key] == value]
         else:
