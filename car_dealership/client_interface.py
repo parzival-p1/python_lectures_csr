@@ -19,6 +19,8 @@ class Client_interface:
         self.dict_filter = { }
         self.filtered_df = self.data.df_clients
         self.table = None
+        self.month_dict = { "Jan": 1, "Feb": 2, "Mar": 3, "Apr": 4, "May": 5, "Jun": 6, "Jul": 7,
+                            "Aug": 8, "Sep": 9, "Oct": 10, "Nov": 11, "Dec": 12 }
 
     def new_client(self):
         self.new_frame = tk.Frame(self.content_frame, width=self.content_frame.winfo_width(),
@@ -479,7 +481,8 @@ class Client_interface:
 
     def filter_table(self, event, selected, column):
         self.filtered_df = self.data.df_clients
-        self.filtered_df["Birthday"] = pd.to_datetime(self.filtered_df["Birthday"], format="%d/%m/%Y", errors="coerce")
+        self.filtered_df["Birthday"] = pd.to_datetime(self.filtered_df["Birthday"], format="%d/%m/%Y",
+                                                      errors="coerce").dt.strftime("%d/%m/%Y")
         if selected == 'All' :
             if column in self.dict_filter:
                 del self.dict_filter[column]
@@ -489,8 +492,7 @@ class Client_interface:
             if key == "Year":
                 self.filtered_df = self.filtered_df[self.filtered_df["Birthday"].dt.year == int(value)]
             elif key == "Month":
-                pass
-               # AQUI VA LA SOLUCION
+                self.filtered_df = self.filtered_df[self.filtered_df["Birthday"].dt.month == self.month_dict[value]]
             else:
                 self.filtered_df = self.filtered_df[self.filtered_df[key] == value]
         self.fill_table()

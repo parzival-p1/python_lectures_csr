@@ -191,9 +191,7 @@ class Interface:
 
 """
     T A R E A:
-        0. Duplicar entradas en excel, NOMBRE, APELLIDA AÑO, (POCAS)
-        1. Filtrar por month en client_interface OJO EL FILTRO VIENE CON NOMBRE EL DATA FRAME VIENE CON NUMERO
-        SE PUEDE PREGUNTAR CON UN BUEN PROMPT A COPILOT CON SOLUCION REDUCIDAD.
+        0. Como hacer para guardar en el excel todos los conceptos de la factura
          """
 
 system = Interface()
