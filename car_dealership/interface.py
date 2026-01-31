@@ -4,7 +4,7 @@ from tkinter import ttk
 from data import Data
 from PIL import Image, ImageTk
 from car_interface import Car_interface
-from sales_interface import Sales_interface
+from invoice_interface import Invoice_interface
 from sales_man_interface import Sales_man_interface
 from client_interface import Client_interface
 
@@ -47,7 +47,7 @@ class Interface:
         self.car_interface = Car_interface(self.data, self.content_frame, self.bottom_frame)
         self.sales_man_interface = Sales_man_interface(self.data, self.content_frame, self.bottom_frame)
         self.client_interface = Client_interface(self.data, self.content_frame, self.bottom_frame)
-        self.sales_interface = Sales_interface(self.data, self.content_frame, self.bottom_frame)
+        self.invoice_interface = Invoice_interface(self.data, self.content_frame, self.bottom_frame)
 
     def run(self):
         # logo
@@ -123,12 +123,12 @@ class Interface:
         self.tree.insert("clients", "end", text="Edit Client")
         self.tree.insert("clients", "end", text="Print All Clients")
 
-        # Sales
-        self.tree.insert("", "end", iid="sales", text="Sales")
-        self.tree.insert("sales", "end", text="New Sale")
-        self.tree.insert("sales", "end", text="Delete Sale")
-        self.tree.insert("sales", "end", text="Edit Sale")
-        self.tree.insert("sales", "end", text="Print All Sales")
+        # Invoice
+        self.tree.insert("", "end", iid="invoice", text="Invoice")
+        self.tree.insert("invoice", "end", text="New Invoice")
+        self.tree.insert("invoice", "end", text="Edit Invoice")
+        self.tree.insert("invoice", "end", text="Print All Invoices")
+        self.tree.insert("invoice", "end", text="Graphs")
 
         self.tree.bind("<<TreeviewSelect>>", self.on_tree_select)
 
@@ -174,13 +174,13 @@ class Interface:
             pass
 
         # sales
-        if item_text == "New Sale":
-            self.sales_interface.new_sale()
-        elif item_text == "Delete Sale":
+        if item_text == "New Invoice":
+            self.invoice_interface.new_invoice()
+        elif item_text == "Edit Invoice":
             pass
-        elif item_text == "Edit Sale":
+        elif item_text == "Graphs":
             pass
-        elif item_text == "Print All Sales":
+        elif item_text == "Print All Invoices":
             pass
         else:
             pass

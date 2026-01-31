@@ -13,10 +13,15 @@ class Data:
         self.df_clients = pd.DataFrame(columns = self.client_columns)
         self.salesman_columns = ['ID', 'Name', 'Last Name', 'Phone Number', 'Address', 'Email', 'Gender', 'Birthday']
         self.df_salesmen = pd.DataFrame(columns = self.salesman_columns)
+        self.invoice_columns = ['ID', 'Client ID', 'Employee ID',	'Date', 'Total', 'Status']
+        self.df_invoices = pd.DataFrame(columns = self.invoice_columns)
+        self.sales_columns = ['ID', 'Invoice', 'Description',	'Quantity', 'Unit price']
+        self.df_sales = pd.DataFrame(columns= self.sales_columns)
         self.car_id = 1000
         self.client_id = 2000
         self.sales_id = 3000
         self.sales_man_id = 4000
+        self.invoices_id = 5000
 
     def add_car(self, new_car):
         new_index = len(self.df_cars)
@@ -44,6 +49,12 @@ class Data:
 
     def get_salesman_data_by_id(self, id):
         return  self.df_salesmen.loc[self.df_salesmen['ID'] == id]
+
+    def get_sales_data_by_id(self, id):
+        return  self.df_sales.loc[self.df_sales['ID'] == id]
+
+    def get_invoice_data_by_id(self, id):
+        return  self.df_invoices.loc[self.df_invoices['ID'] == id]
 
     def delete_car_by_id(self, id):
         self.df_cars = self.df_cars[self.df_cars['ID'] != id]
@@ -73,25 +84,42 @@ class Data:
     def get_next_salesman_id(self):
         return self.sales_man_id
 
+    def get_next_sales_id(self):
+        return self.sales_id
+
+    def get_next_invoice_id(self):
+        return self.invoices_id
+
     def save_data(self):
         # Guardar en un archivo Excel con varias hojas
         with pd.ExcelWriter("car_dealership.xlsx", engine="openpyxl") as writer:
             self.df_cars.to_excel(writer, sheet_name="Cars", index=False)
             self.df_clients.to_excel(writer, sheet_name="Clients", index=False)
             self.df_salesmen.to_excel(writer, sheet_name="Salesmen", index=False)
+            self.df_invoices.to_excel(writer, sheet_name="Invoices", index=False)
+            self.df_sales.to_excel(writer, sheet_name="Sales", index=False)
 
     def load_data(self):
         if os.path.exists("car_dealership.xlsx"):
             df_dict = pd.read_excel("car_dealership.xlsx", sheet_name=None, dtype=str)
             # df_dict es un diccionario con cada hoja como un DataFrame
+
             self.df_cars = df_dict["Cars"]
             self.car_id = int(self.df_cars["ID"].max()) + 1
             self.df_clients = df_dict["Clients"]
             self.client_id = int(self.df_clients["ID"].max()) + 1
             self.df_salesmen = df_dict["Salesmen"]
             self.sales_man_id = int(self.df_salesmen["ID"].max()) + 1
+            self.df_invoices = df_dict['Invoices']
+            if not self.df_invoices.empty:
+                self.invoices_id = int(self.df_invoices['ID'].max()) + 1
+            self.df_sales = df_dict['Sales']
+            if not self.df_sales.empty:
+                self.sales_id = int(self.df_sales['ID'].max()) + 1
 
     def print_data(self):
         print(self.df_cars)
         print(self.df_salesmen)
         print(self.df_clients)
+        print(self.df_sales)
+        print(self.df_invoices)
