@@ -6,7 +6,6 @@ from tkcalendar import DateEntry
 
 import invoice_item
 
-
 class Invoice_interface:
     def __init__(self, Data, content_frame, bottom_frame):
         self.data = Data
@@ -19,8 +18,11 @@ class Invoice_interface:
         self.table = None
         self.dict_filter = {}
         self.item_y = 5
+        self.item_count = 1
         # Save Data for combo box brand, model, transmission, color, price, year, km, car_type, fuel, id, stock
-        self.dict_cars = {row['ID']: [row["Stock"], f"{row['Brand']} {row['Model']} {row["Color"]} {row["Year"]} {row["Car Type"]}"]
+        self.dict_cars = {row['ID']: [row["Stock"], f"{row['Brand']} {row['Model']} {row["Color"]} {row["Year"]} "
+                                                    f"{row["Car Type"]} {row['Transmission']} {row['Km']}Km "
+                                                    f"{row['Fuel']}"]
                              for _, row in self.data.df_cars.iterrows()}
 
         self.dict_clients = {row['ID']: f"{row['Name']} {row['Last Name']}"
@@ -69,12 +71,12 @@ class Invoice_interface:
                                          values=list(self.dict_salesmen.values()))
         self.txt_salesman.place(x=400, y=50)
         self.btn_new_concept = tk.Button(self.new_label_frame, text="New Concept", width=15, command=self.new_row)
-        self.btn_new_concept.place(x=700, y=5)
+        self.btn_new_concept.place(x=600, y=65)
 
         self.invoice_label_frame = tk.LabelFrame(self.new_frame, text="Description",
                                              bg='#484b4c',
-                                             width=self.content_frame.winfo_width() - 20,
-                                             height=self.content_frame.winfo_height() - 160,
+                                             width=self.content_frame.winfo_width() - 40,
+                                             height=self.content_frame.winfo_height() - 180,
                                              fg='white')
         self.invoice_label_frame.place(x=10, y=110)
 
@@ -245,7 +247,6 @@ class Invoice_interface:
             self.dict_filter[column] = selected
         for key, value in self.dict_filter.items():
             self.filtered_df = self.filtered_df[self.filtered_df[key] == value]
-
         self.fill_table()
 
     def fill_table(self):
@@ -257,10 +258,14 @@ class Invoice_interface:
             self.table.insert("", "end", values=list(row))
 
     def new_row(self):
-        new_item = invoice_item.Invoice_item(self.invoice_label_frame, self.dict_cars, self, self.item_y)
-        self.item_y += 15
-        self.item_list.append(new_item)
-        new_item.show_row()
+        if self.item_count < 9:
+            new_item = invoice_item.Invoice_item(self.invoice_label_frame, self.dict_cars, self, self.item_y)
+            self.item_y += 25
+            self.item_list.append(new_item)
+            new_item.show_row()
+            self.item_count += 1
+        else:
+            messagebox.showinfo("Max concepts reached", "You have reached the max count of concepts!")
 
     def remove_item(self, item):
         if item in self.item_list:

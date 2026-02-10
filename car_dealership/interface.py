@@ -191,10 +191,8 @@ class Interface:
 
 """
     T A R E A:
-        0. Acomodar Add New Invoice que quede bien estetico, comestic changes
-        1. Limitar la cantidad de rows a 7/8 rows.
-        2. Volver a estudiar el codigo de invoice_item, clases padre (invoice_interface) clase hija: invoice_item
-            entender el problema.
+    0. Encontrar el problema de por que no borra
+    1. 
          """
 
 system = Interface()
