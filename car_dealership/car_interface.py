@@ -591,4 +591,3 @@ class Car_interface:
         # Insertar filas
         for _, row in self.filtered_df.iterrows():
             self.table.insert("", "end", values=list(row))
-

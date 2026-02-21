@@ -1,3 +1,5 @@
+from numpy.ma.core import indices
+
 import data
 import tkinter as tk
 from tkinter import messagebox
@@ -88,26 +90,45 @@ class Invoice_interface:
 
         self.new_frame.place(x=0, y=0)
 
-    def add_new_invoice(self):  # brand, model, transmission, color, price, year, km, car_type, fuel, id, stock
-        if (self.validate_car_info()):
-            car_dict = {
-                'ID': self.txt_id.get(),
-                'Brand': self.txt_brand.get(),
-                'Model': self.txt_model.get(),
-                'Transmission': self.txt_transmission.get(),
-                'Color': self.txt_color.get(),
-                'Price': self.txt_price.get(),
-                'Year': self.txt_year.get(),
-                'Km': self.txt_km.get(),
-                'Car Type': self.txt_car_type.get(),
-                'Fuel': self.txt_car_fuel.get(),
-                'Stock': self.txt_stock.get()
-            }
-            self.data.add_car(car_dict)
-            messagebox.showinfo("Exito!", "EL nuevo carro se ha añadido!")
-            self.clear_fields()
+    def validate_invoice(self):
+        if self.txt_client.get() == '':
+            messagebox.showerror('Error!', 'Por favor seleccione un cliente...!')
+            return False
+        elif self.txt_salesman.get() == '':
+            messagebox.showerror('Error!', 'Por favor seleccione un vendedor')
+            return False
+        elif len(self.item_list) < 1:
+            messagebox.showerror('Error', 'Agregue al menos un concepto!')
+            return False
         else:
-            messagebox.showinfo("Mal!", "Algo anda mal")
+            ids = True
+            stocks = True
+
+            for item in self.item_list:
+                if item.txt_car_id.get() == '':
+                    ids = False
+                elif item.txt_car_stock.get() == '':
+                    stocks = False
+                elif "Aqui va una condicion:":
+                    "Aqui va algo"
+
+            if not ids:
+                messagebox.showerror('Error!', 'Seleccione un ID')
+                return False
+            elif not stocks:
+                messagebox.showerror('Error!', 'Seleccione un stock')
+                return False
+            elif "Aqui valido eso: ":
+                messagebox.showerror("Error!", "Los Conceptos no deben repetirse!")
+                return False
+            else:
+                return True
+
+    def add_new_invoice(self):  # brand, model, transmission, color, price, year, km, car_type, fuel, id, stock
+        if self.validate_invoice():
+            messagebox.showinfo('Mensaje', 'Todo bien!')
+        else:
+            messagebox.showinfo('Mensaje', 'Todo mal')
 
     def print_new_invoice(self):
         pass
@@ -269,12 +290,17 @@ class Invoice_interface:
 
     def remove_item(self, item):
         if item in self.item_list:
+            indice = self.item_list.index(item)
             self.item_list.remove(item)
-
+            self.item_count -= 1
+            for i in range(indice, len(self.item_list)):
+                self.item_list[i].y -= 25
+                self.item_list[i].row_frame.place(x=5, y=self.item_list[i].y)
+            self.item_y -= 25
 
 """
-    TAREA: INVESTIGAR
-        0. Investigar como duplicar la linea de DEscription + New
-        1. Una vez duplicada, como le hago para borrar el boton de new de la primer fila (solo debe haber un boton de New)
-        2. Como limitar a maximo 5 renglones la descripcion
+TAREA: 
+INVESTIGAR:
+    0. Resolver que los IDs no deben repetirse, en la funcion Validate Invoice:
+    1. PROMPTS CHIDOS!
 """

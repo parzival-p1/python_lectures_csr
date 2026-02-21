@@ -51,5 +51,5 @@ class Invoice_item:
         return 0, 0
 
     def delete_row(self):
-        # self.row_frame.destroy()
+        self.row_frame.destroy()
         self.owner.remove_item(self)
