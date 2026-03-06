@@ -104,13 +104,12 @@ class Invoice_interface:
             ids = True
             stocks = True
 
+            repeted_items = len(self.item_list) != len(set(self.item_list))
             for item in self.item_list:
                 if item.txt_car_id.get() == '':
                     ids = False
                 elif item.txt_car_stock.get() == '':
                     stocks = False
-                elif "Aqui va una condicion:":
-                    "Aqui va algo"
 
             if not ids:
                 messagebox.showerror('Error!', 'Seleccione un ID')
@@ -118,17 +117,15 @@ class Invoice_interface:
             elif not stocks:
                 messagebox.showerror('Error!', 'Seleccione un stock')
                 return False
-            elif "Aqui valido eso: ":
+            elif repeted_items:
                 messagebox.showerror("Error!", "Los Conceptos no deben repetirse!")
                 return False
             else:
                 return True
 
-    def add_new_invoice(self):  # brand, model, transmission, color, price, year, km, car_type, fuel, id, stock
+    def add_new_invoice(self):
         if self.validate_invoice():
-            messagebox.showinfo('Mensaje', 'Todo bien!')
-        else:
-            messagebox.showinfo('Mensaje', 'Todo mal')
+            pass
 
     def print_new_invoice(self):
         pass

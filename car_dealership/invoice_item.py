@@ -42,13 +42,19 @@ class Invoice_item:
         self.lbl_car_description.config(text=self.dict_cars[car_id][1])
 
     def get_selected_data(self):
-        if self.txt_car_id == "":
+        if self.txt_car_id.get() == "":
             messagebox.showerror("Error!", "No se ha seleccionado un concepto")
-        elif self.txt_car_stock == "":
+        elif self.txt_car_stock.get() == "":
             messagebox.showerror("Error!", "No se ha seleccionado un cantidad")
         else:
             return self.txt_car_id.get(), self.txt_car_stock.get()
         return 0, 0
+
+    def __eq__(self, other):
+        return isinstance(other, Invoice_item) and self.txt_car_id.get() == other.txt_car_id.get()
+
+    def __hash__(self):
+        return hash(self.txt_car_id.get())
 
     def delete_row(self):
         self.row_frame.destroy()

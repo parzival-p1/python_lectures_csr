@@ -191,8 +191,11 @@ class Interface:
 
 """
     T A R E A:
-    0. Encontrar el problema de por que no borra
-    1. 
+    0. Dejar 7 campos en lugar de nueve
+    1. Agregar un label de para el precio unitario
+    2. Agregar un label para el ivA + iva calculado
+    3. Agregar un label para el subtotal
+    4. Agregar un label para el total + iva
          """
 
 system = Interface()
