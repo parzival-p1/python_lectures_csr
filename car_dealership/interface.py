@@ -191,12 +191,8 @@ class Interface:
 
 """
     T A R E A:
-    0. Dejar 7 campos en lugar de nueve
-    1. Agregar un label de para el precio unitario
-    2. Agregar un label para el ivA + iva calculado
-    3. Agregar un label para el subtotal
-    4. Agregar un label para el total + iva
-         """
+    0. Investigar como imprimir en python. (invoice_interface: 154})
+"""
 
 system = Interface()
 system.run()

@@ -24,7 +24,7 @@ class Invoice_interface:
         # Save Data for combo box brand, model, transmission, color, price, year, km, car_type, fuel, id, stock
         self.dict_cars = {row['ID']: [row["Stock"], f"{row['Brand']} {row['Model']} {row["Color"]} {row["Year"]} "
                                                     f"{row["Car Type"]} {row['Transmission']} {row['Km']}Km "
-                                                    f"{row['Fuel']}"]
+                                                    f"{row['Fuel']}", row['Price']]
                              for _, row in self.data.df_cars.iterrows()}
 
         self.dict_clients = {row['ID']: f"{row['Name']} {row['Last Name']}"
@@ -32,6 +32,8 @@ class Invoice_interface:
 
         self.dict_salesmen = {row['ID']: f"{row['Name']} {row['Last Name']}"
                              for _, row in self.data.df_salesmen.iterrows()}
+
+        self.subtotal = 0
 
     def new_invoice(self):
         self.new_frame = tk.Frame(self.content_frame, width=self.content_frame.winfo_width(),
@@ -78,9 +80,27 @@ class Invoice_interface:
         self.invoice_label_frame = tk.LabelFrame(self.new_frame, text="Description",
                                              bg='#484b4c',
                                              width=self.content_frame.winfo_width() - 40,
-                                             height=self.content_frame.winfo_height() - 180,
+                                             height=self.content_frame.winfo_height() - 260,
                                              fg='white')
         self.invoice_label_frame.place(x=10, y=110)
+
+        # subtotal
+        lbl_subtotal = tk.Label(self.new_label_frame,  bg='#484b4c', fg="white", text='SUBTOTAL: ')
+        lbl_subtotal.place(x=550, y=300)
+        self.lbl_subtotal_cur = tk.Label(self.new_label_frame,  bg='#484b4c', fg="white", text='$')
+        self.lbl_subtotal_cur.place(x=620, y=300)
+
+        # taxes
+        lbl_iva = tk.Label(self.new_label_frame,  bg='#484b4c', fg="white", text='IVA: ')
+        lbl_iva.place(x=550, y=320)
+        self.lbl_iva_cur = tk.Label(self.new_label_frame,  bg='#484b4c', fg="white", text='$')
+        self.lbl_iva_cur.place(x=620, y=320)
+
+        # total
+        lbl_total = tk.Label(self.new_label_frame,  bg='#484b4c', fg="white", text='TOTAL: ')
+        lbl_total.place(x=550, y=340)
+        self.lbl_total_cur = tk.Label(self.new_label_frame,  bg='#484b4c', fg="white", text='$')
+        self.lbl_total_cur.place(x=620, y=340)
 
         # Buttons
         self.btn_print_invoice = tk.Button(self.new_label_frame, text="Print Invoice", width=18, command=self.print_new_invoice)
@@ -123,6 +143,9 @@ class Invoice_interface:
             else:
                 return True
 
+    def update_totals(self, subtotal):
+        self.subtotal += subtotal
+
     def add_new_invoice(self):
         if self.validate_invoice():
             pass
@@ -130,9 +153,6 @@ class Invoice_interface:
     def print_new_invoice(self):
         pass
 
-
-    def validate_car_info(self):
-        pass
 
     def clear_fields(self):
         self.txt_id.config(state='normal')
@@ -276,7 +296,7 @@ class Invoice_interface:
             self.table.insert("", "end", values=list(row))
 
     def new_row(self):
-        if self.item_count < 9:
+        if self.item_count < 7:
             new_item = invoice_item.Invoice_item(self.invoice_label_frame, self.dict_cars, self, self.item_y)
             self.item_y += 25
             self.item_list.append(new_item)
