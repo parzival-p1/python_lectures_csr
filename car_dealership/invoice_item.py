@@ -29,6 +29,7 @@ class Invoice_item:
         # Stock
         self.txt_car_stock = ttk.Combobox(self.row_frame, width=5, state="readonly")
         self.txt_car_stock.place(x=500, y=5)
+        self.txt_car_stock.bind("<<ComboboxSelected>>", lambda event: self.update_totals(event))
 
         # Precio Unitario
         self.lbl_unit_price = tk.Label(self.row_frame, bg='#484b4c', fg="white", text='$')
@@ -39,6 +40,10 @@ class Invoice_item:
         self.btn_delete_concept.place(x=650, y=5)
         self.row_frame.place(x=5, y=self.y)
 
+    def update_totals(self, event):
+        self.owner.update_totals()
+
+
     def update_fields(self, event):
         self.txt_car_stock.set('') # clean field
         car_id = self.txt_car_id.get()
@@ -46,7 +51,6 @@ class Invoice_item:
         self.txt_car_stock['values'] = stock_list
         self.lbl_car_description.config(text=self.dict_cars[car_id][1])
         self.lbl_unit_price.config(text="$ " + self.dict_cars[car_id][2])
-        self.owner.update_totals((int(self.txt_car_stock.get()) * float(self.dict_cars[car_id][2])))
 
     def get_selected_data(self):
         if self.txt_car_id.get() == "":

@@ -46,7 +46,7 @@ class Invoice_interface:
                                              fg='white')
         self.new_label_frame.place(x=5, y=5)
 
-        # Id
+        # Id de la factura
         lbl_id = tk.Label(self.new_label_frame, bg='#484b4c', fg="white", text='Id: ')
         lbl_id.place(x=20, y=20)
         self.txt_id = tk.Entry(self.new_label_frame, width=20)
@@ -85,21 +85,21 @@ class Invoice_interface:
         self.invoice_label_frame.place(x=10, y=110)
 
         # subtotal
-        lbl_subtotal = tk.Label(self.new_label_frame,  bg='#484b4c', fg="white", text='SUBTOTAL: ')
+        lbl_subtotal = tk.Label(self.new_label_frame,  bg='#484b4c', fg="white", text='SUBTOTAL: $')
         lbl_subtotal.place(x=550, y=300)
-        self.lbl_subtotal_cur = tk.Label(self.new_label_frame,  bg='#484b4c', fg="white", text='$')
+        self.lbl_subtotal_cur = tk.Label(self.new_label_frame,  bg='#484b4c', fg="white", text='')
         self.lbl_subtotal_cur.place(x=620, y=300)
 
         # taxes
-        lbl_iva = tk.Label(self.new_label_frame,  bg='#484b4c', fg="white", text='IVA: ')
+        lbl_iva = tk.Label(self.new_label_frame,  bg='#484b4c', fg="white", text='IVA: $')
         lbl_iva.place(x=550, y=320)
-        self.lbl_iva_cur = tk.Label(self.new_label_frame,  bg='#484b4c', fg="white", text='$')
+        self.lbl_iva_cur = tk.Label(self.new_label_frame,  bg='#484b4c', fg="white", text='')
         self.lbl_iva_cur.place(x=620, y=320)
 
         # total
-        lbl_total = tk.Label(self.new_label_frame,  bg='#484b4c', fg="white", text='TOTAL: ')
+        lbl_total = tk.Label(self.new_label_frame,  bg='#484b4c', fg="white", text='TOTAL: $')
         lbl_total.place(x=550, y=340)
-        self.lbl_total_cur = tk.Label(self.new_label_frame,  bg='#484b4c', fg="white", text='$')
+        self.lbl_total_cur = tk.Label(self.new_label_frame,  bg='#484b4c', fg="white", text='')
         self.lbl_total_cur.place(x=620, y=340)
 
         # Buttons
@@ -143,15 +143,40 @@ class Invoice_interface:
             else:
                 return True
 
-    def update_totals(self, subtotal):
-        self.subtotal += subtotal
+    def update_totals(self):
+        self.subtotal = 0
+        for item in self.item_list:
+            if item.txt_car_stock.get() != "":
+                price = float(self.dict_cars[item.txt_car_id.get()][2])
+                self.subtotal += int(item.txt_car_stock.get()) * price
+        sub =  f"{self.subtotal:.2f}"
+        iva = f"{self.subtotal *.16:.2f}"
+        total = f"{self.subtotal * 1.16:.2f}"
+
+        self.lbl_subtotal_cur.config(text=sub)
+        self.lbl_iva_cur.config(text=iva)
+        self.lbl_total_cur.config(text=total)
 
     def add_new_invoice(self):
         if self.validate_invoice():
-            pass
+            key_client = next((k for k, v in self.dict_clients.items() if v == self.txt_client.get()), None)
+            key_salesmen = next((k for k, v in self.dict_salesmen.items() if v == self.txt_salesman.get()), None)
+
+            invoice_dict = {
+                'ID': self.txt_id.get(),
+                'Client ID': key_client,
+                'Employee ID': key_salesmen,
+                'Date': self.txt_date.get(),
+                'Total': self.lbl_total_cur['text'],
+                'Status': "Active"
+            }
+
+
+
 
     def print_new_invoice(self):
         pass
+    "Como imprimir un pdf? necesito otra librera"
 
 
     def clear_fields(self):

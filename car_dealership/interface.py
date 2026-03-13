@@ -188,7 +188,6 @@ class Interface:
 # brand, model, transmission, color, price, year, km, car_type, fuel, id, stock)
     def show_error(self):
         messagebox.showerror("Error", "Ha ocurrido un problema inesperado!!!")
-
 """
     T A R E A:
     0. Investigar como imprimir en python. (invoice_interface: 154})
