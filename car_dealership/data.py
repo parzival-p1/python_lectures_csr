@@ -46,6 +46,11 @@ class Data:
         self.df_invoices.loc[new_index] = list(new_invoice.values())
         self.invoices_id += 1
 
+    def add_sales(self, new_sale):
+        new_index = len(self.df_sales)
+        self.df_sales.loc[new_index] = list(new_sale.values())
+        self.sales_id += 1
+
     def get_car_data_by_id(self, id):
         return  self.df_cars.loc[self.df_cars['ID'] == id]
 

@@ -171,30 +171,38 @@ class Invoice_interface:
                 'Status': "Active"
             }
 
-
-
+            self.data.add_invoice(invoice_dict)
+            for item in self.item_list:
+                sales_dict = {
+                    'ID' : self.data.sales_id,
+                    'Invoice' : self.txt_id.get(),
+                    'Description' : item.txt_car_id.get(),
+                    'Quantity' : item.txt_car_stock.get(),
+                    'Unit price' : item.lbl_unit_price['text']
+                }
+                self.data.add_sales(sales_dict)
+                messagebox.showinfo("Exito!", "La nueva factura se ha añadido!")
+                self.clear_fields()
 
     def print_new_invoice(self):
         pass
     "Como imprimir un pdf? necesito otra librera"
 
-
     def clear_fields(self):
         self.txt_id.config(state='normal')
         self.txt_id.delete(0, tk.END)
-        self.txt_id.insert(0, str(self.data.get_next_car_id()))
+        self.txt_id.insert(0, str(self.data.get_next_invoice_id()))
         self.txt_id.config(state='readonly')
-        self.txt_model.set('')
-        self.txt_brand.set('')
-        self.txt_transmission.set('')
-        self.txt_color.set('')
-        self.txt_year.set('')
-        self.txt_car_type.set('')
-        self.txt_car_fuel.set('')
+        self.txt_client.set('')
+        self.txt_salesman.set('')
 
-        self.txt_price.delete(0, tk.END)
-        self.txt_km.delete(0, tk.END)
-        self.txt_stock.delete(0, tk.END)
+        self.lbl_subtotal_cur['text'] = ''
+        self.lbl_total_cur['text'] = ''
+        self.lbl_iva_cur['text'] = ''
+
+        for item in self.item_list:
+            self.remove_item(item)
+        self.remove_item(self.item_list[0])
 
     def print_all_invoices(self):
         self.new_frame = tk.Frame(self.content_frame, width=self.content_frame.winfo_width(),

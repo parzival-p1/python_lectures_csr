@@ -43,7 +43,6 @@ class Invoice_item:
     def update_totals(self, event):
         self.owner.update_totals()
 
-
     def update_fields(self, event):
         self.txt_car_stock.set('') # clean field
         car_id = self.txt_car_id.get()
