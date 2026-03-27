@@ -67,5 +67,4 @@ class Invoice_item:
         return hash(self.txt_car_id.get())
 
     def delete_row(self):
-        self.row_frame.destroy()
         self.owner.remove_item(self)

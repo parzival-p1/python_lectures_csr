@@ -201,8 +201,8 @@ class Invoice_interface:
         self.lbl_iva_cur['text'] = ''
 
         for item in self.item_list:
-            self.remove_item(item)
-        self.remove_item(self.item_list[0])
+            item.delete_row()
+
 
     def print_all_invoices(self):
         self.new_frame = tk.Frame(self.content_frame, width=self.content_frame.winfo_width(),
@@ -340,13 +340,18 @@ class Invoice_interface:
 
     def remove_item(self, item):
         if item in self.item_list:
-            indice = self.item_list.index(item)
             self.item_list.remove(item)
+            if item.row_frame.winfo_exists():
+                item.row_frame.destroy()
+                del item
             self.item_count -= 1
-            for i in range(indice, len(self.item_list)):
-                self.item_list[i].y -= 25
-                self.item_list[i].row_frame.place(x=5, y=self.item_list[i].y)
-            self.item_y -= 25
+            # recalcula posiciones desde cero
+            for i, it in enumerate(self.item_list):
+                it.y = i * 25 + 5  # o el offset inicial que uses
+                it.row_frame.place(x=5, y=it.y)
+                print(f"Item {i}: y={it.y}")
+            # actualiza item_y al final
+            # self.item_y = len(self.item_list) * 25 + 5
 
 """
 TAREA: 
