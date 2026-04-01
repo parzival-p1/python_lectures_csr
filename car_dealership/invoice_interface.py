@@ -5,7 +5,6 @@ import tkinter as tk
 from tkinter import messagebox
 from tkinter import ttk
 from tkcalendar import DateEntry
-
 import invoice_item
 
 class Invoice_interface:
@@ -181,8 +180,14 @@ class Invoice_interface:
                     'Unit price' : item.lbl_unit_price['text']
                 }
                 self.data.add_sales(sales_dict)
-                messagebox.showinfo("Exito!", "La nueva factura se ha añadido!")
-                self.clear_fields()
+                stock_total = str(int(self.dict_cars[item.txt_car_id.get()][0]) - int(item.txt_car_stock.get()))
+                self.data.df_cars.loc[self.data.df_cars["ID"] == item.txt_car_id.get(), "stock"] = stock_total
+                if stock_total == '0':
+                    del self.dict_cars[item.txt_car_id.get()]
+                else:
+                    self.dict_cars[item.txt_car_id.get()][0] = stock_total
+            messagebox.showinfo("Exito!", "La nueva factura se ha añadido!")
+            self.clear_fields()
 
     def print_new_invoice(self):
         pass
@@ -200,9 +205,8 @@ class Invoice_interface:
         self.lbl_total_cur['text'] = ''
         self.lbl_iva_cur['text'] = ''
 
-        for item in self.item_list:
-            item.delete_row()
-
+        while len(self.item_list) > 0:
+            self.item_list[0].delete_row()
 
     def print_all_invoices(self):
         self.new_frame = tk.Frame(self.content_frame, width=self.content_frame.winfo_width(),
@@ -345,11 +349,12 @@ class Invoice_interface:
                 item.row_frame.destroy()
                 del item
             self.item_count -= 1
+            self.item_y -= 25
             # recalcula posiciones desde cero
             for i, it in enumerate(self.item_list):
                 it.y = i * 25 + 5  # o el offset inicial que uses
                 it.row_frame.place(x=5, y=it.y)
-                print(f"Item {i}: y={it.y}")
+                # print(f"Item {i}: y={it.y}")
             # actualiza item_y al final
             # self.item_y = len(self.item_list) * 25 + 5
 

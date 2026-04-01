@@ -61,7 +61,7 @@ class Invoice_item:
         return 0, 0
 
     def __eq__(self, other):
-        return isinstance(other, Invoice_item) and self.txt_car_id.get() == other.txt_car_id.get()
+        return isinstance(other, Invoice_item) and id(self) == id(other) # id(obj) trae la dir de mem del obj
 
     def __hash__(self):
         return hash(self.txt_car_id.get())
