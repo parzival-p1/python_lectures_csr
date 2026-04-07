@@ -126,7 +126,7 @@ class Interface:
         # Invoice
         self.tree.insert("", "end", iid="invoice", text="Invoice")
         self.tree.insert("invoice", "end", text="New Invoice")
-        self.tree.insert("invoice", "end", text="Edit Invoice")
+        self.tree.insert("invoice", "end", text="Cancel Invoice")
         self.tree.insert("invoice", "end", text="Print All Invoices")
         self.tree.insert("invoice", "end", text="Graphs")
 
@@ -176,8 +176,8 @@ class Interface:
         # sales
         if item_text == "New Invoice":
             self.invoice_interface.new_invoice()
-        elif item_text == "Edit Invoice":
-            pass
+        elif item_text == "Cancel Invoice":
+            self.invoice_interface.cancel_invoice()
         elif item_text == "Graphs":
             pass
         elif item_text == "Print All Invoices":

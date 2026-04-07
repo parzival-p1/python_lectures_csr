@@ -109,6 +109,93 @@ class Invoice_interface:
 
         self.new_frame.place(x=0, y=0)
 
+    def cancel_invoice(self):
+        self.new_frame = tk.Frame(self.content_frame, width=self.content_frame.winfo_width(),
+                                  height=self.content_frame.winfo_height(), bg='#484b4c')
+
+        self.new_label_frame = tk.LabelFrame(self.new_frame, text="Cancel Invoice",
+                                             bg='#484b4c',
+                                             width=self.content_frame.winfo_width() - 10,
+                                             height=self.content_frame.winfo_height() - 10,
+                                             fg='white')
+        self.new_label_frame.place(x=5, y=5)
+
+        # select car
+        lbl_select_invoice = tk.Label(self.new_label_frame, bg='#484b4c', fg="white", text='Select Invoice: ')
+        lbl_select_invoice.place(x=20, y=60)
+        self.txt_select_invoice = ttk.Combobox(self.new_label_frame, width=18, state="readonly",
+                                           values=self.data.df_invoices["ID"].tolist())
+        self.txt_select_invoice.place(x=120, y=60)
+
+        # Buttons
+        self.btn_select_invoice = tk.Button(self.new_label_frame, text="Select Invoice", width=15,
+                                        command=self.show_invoice_details)
+        self.btn_select_invoice.place(x=300, y=60)
+
+        # Separator
+        separator = tk.Frame(self.new_label_frame, bg='white', height=2, width=self.content_frame.winfo_width() - 30)
+        separator.place(x=10, y=120)
+        self.invoice_details = tk.Frame(self.new_label_frame, bg='#484b4c',
+                                    width=self.content_frame.winfo_width() - 30,
+                                    height=self.content_frame.winfo_height() - 180)
+        # Invoice details
+        # ID
+        lbl_id = tk.Label(self.invoice_details, bg='#484b4c', fg="white", text='Id: ')
+        lbl_id.place(x=20, y=20)
+        self.txt_id = tk.Label(self.invoice_details, width=20)
+        self.txt_id['text'] = ''
+        self.txt_id.place(x=120, y=20)
+
+        # Date
+        lbl_date = tk.Label(self.invoice_details, bg='#484b4c', fg="white", text='Date: ')
+        lbl_date.place(x=330, y=20)
+        self.txt_date = tk.Label(self.invoice_details, width=20)
+        self.txt_date['text'] = ''
+        self.txt_date .place(x=400, y=20)
+
+        # Client
+        lbl_client = tk.Label(self.invoice_details, bg='#484b4c', fg="white", text='Client: ')
+        lbl_client.place(x=20, y=50)
+        self.txt_client = tk.Label(self.invoice_details, width=20)
+        self.txt_client['text'] = ''
+        self.txt_client.place(x=120, y=50)
+
+        # Employee ID
+        lbl_employee = tk.Label(self.invoice_details, bg='#484b4c', fg="white", text='Employee: ')
+        lbl_employee.place(x=330, y=50)
+        self.txt_employee = tk.Label(self.invoice_details, width=20)
+        self.txt_employee['text'] = ''
+        self.txt_employee.place(x=400, y=50)
+
+        # Total
+        lbl_total = tk.Label(self.invoice_details, bg='#484b4c', fg="white", text='Total: ')
+        lbl_total.place(x=330, y=80)
+        self.txt_total = tk.Label(self.invoice_details, width=20)
+        self.txt_total['text'] = ''
+        self.txt_total.place(x=400, y=80)
+
+        # Cancel Button
+        self.btn_edit_invoice = tk.Button(self.invoice_details, text="Cancel Invoice", width=15,
+                                          command=self.confirm_cancel_invoice)
+        self.btn_edit_invoice.place(x=600, y=250)
+
+        self.new_frame.place(x=0, y=0)
+
+    def confirm_cancel_invoice(self):
+        pass
+
+    def show_invoice_details(self):
+        if self.txt_select_invoice.get() != "":
+            self.invoice_details.place(x=10, y=130)
+            df_invoice = self.data.get_invoice_data_by_id(self.txt_select_invoice.get())
+            self.txt_id['text'] = df_invoice['ID'].iloc[0]
+            self.txt_client['text'] = df_invoice['Client ID'].iloc[0]
+            self.txt_employee['text'] = df_invoice['Employee ID'].iloc[0]
+            self.txt_date['text'] = df_invoice['Date'].iloc[0]
+            self.txt_total['text'] = df_invoice['Total'].iloc[0]
+        else:
+            messagebox.showerror("Error!!!", "No se ha seleccionado ningun ID")
+
     def validate_invoice(self):
         if self.txt_client.get() == '':
             messagebox.showerror('Error!', 'Por favor seleccione un cliente...!')
@@ -181,7 +268,7 @@ class Invoice_interface:
                 }
                 self.data.add_sales(sales_dict)
                 stock_total = str(int(self.dict_cars[item.txt_car_id.get()][0]) - int(item.txt_car_stock.get()))
-                self.data.df_cars.loc[self.data.df_cars["ID"] == item.txt_car_id.get(), "stock"] = stock_total
+                self.data.df_cars.loc[self.data.df_cars["ID"] == item.txt_car_id.get(), "Stock"] = stock_total
                 if stock_total == '0':
                     del self.dict_cars[item.txt_car_id.get()]
                 else:
@@ -361,6 +448,6 @@ class Invoice_interface:
 """
 TAREA: 
 INVESTIGAR:
-    0. Resolver que los IDs no deben repetirse, en la funcion Validate Invoice:
-    1. PROMPTS CHIDOS!
+    0. En la func show_invoice_details(): investigar como poner el nombre en lugar del id 
+    sacar de los df de clientes Y empleados
 """
