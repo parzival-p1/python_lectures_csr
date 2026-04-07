@@ -449,5 +449,5 @@ class Invoice_interface:
 TAREA: 
 INVESTIGAR:
     0. En la func show_invoice_details(): investigar como poner el nombre en lugar del id 
-    sacar de los df de clientes Y empleados
+    sacar de los df de clientes Y empleados.
 """
