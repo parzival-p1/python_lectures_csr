@@ -189,10 +189,27 @@ class Invoice_interface:
             self.invoice_details.place(x=10, y=130)
             df_invoice = self.data.get_invoice_data_by_id(self.txt_select_invoice.get())
             self.txt_id['text'] = df_invoice['ID'].iloc[0]
-            self.txt_client['text'] = df_invoice['Client ID'].iloc[0]
-            self.txt_employee['text'] = df_invoice['Employee ID'].iloc[0]
+            # client
+            client_register = self.data.df_clients[self.data.df_clients['ID'] == df_invoice['Client ID'].iloc[0]]
+            self.txt_client['text'] = client_register['Name'].iloc[0] + ' ' + client_register['Last Name'].iloc[0]
+            # employee
+            employee_register = self.data.df_salesmen[self.data.df_salesmen['ID'] == df_invoice['Employee ID'].iloc[0]]
+            self.txt_employee['text'] = employee_register['Name'].iloc[0] + ' ' + employee_register['Last Name'].iloc[0]
             self.txt_date['text'] = df_invoice['Date'].iloc[0]
             self.txt_total['text'] = df_invoice['Total'].iloc[0]
+
+            # traerme todos los conceptos de la factura df_invoice['ID'].iloc[0]
+            invoice_concepts = self.data.df_sales[self.data.df_sales['Invoice'] == df_invoice['ID'].iloc[0]]
+            # aqui va el for
+            y = 120
+            for _, row in invoice_concepts.iterrows():
+                self.txt_row = tk.Label(self.invoice_details, width=100, anchor="w")
+                # 'Brand', 'Model', 'Transmission', 'Color', 'Year', 'Km', 'Car Type','Fuel'
+                brand_concept = ''
+                self.txt_row['text'] = row['Description'] + ' ' + row['Quantity'] + ' ' + row['Unit price']
+                self.txt_row.place(x=10, y=y)
+                y += 30
+
         else:
             messagebox.showerror("Error!!!", "No se ha seleccionado ningun ID")
 
