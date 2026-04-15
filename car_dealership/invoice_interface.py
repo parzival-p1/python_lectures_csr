@@ -1,5 +1,4 @@
 from numpy.ma.core import indices
-
 import data
 import tkinter as tk
 from tkinter import messagebox
@@ -122,36 +121,36 @@ class Invoice_interface:
 
         # select car
         lbl_select_invoice = tk.Label(self.new_label_frame, bg='#484b4c', fg="white", text='Select Invoice: ')
-        lbl_select_invoice.place(x=20, y=60)
+        lbl_select_invoice.place(x=20, y=10)
         self.txt_select_invoice = ttk.Combobox(self.new_label_frame, width=18, state="readonly",
                                            values=self.data.df_invoices["ID"].tolist())
-        self.txt_select_invoice.place(x=120, y=60)
+        self.txt_select_invoice.place(x=120, y=10)
 
         # Buttons
         self.btn_select_invoice = tk.Button(self.new_label_frame, text="Select Invoice", width=15,
                                         command=self.show_invoice_details)
-        self.btn_select_invoice.place(x=300, y=60)
+        self.btn_select_invoice.place(x=300, y=10)
 
         # Separator
         separator = tk.Frame(self.new_label_frame, bg='white', height=2, width=self.content_frame.winfo_width() - 30)
-        separator.place(x=10, y=120)
+        separator.place(x=10, y=50)
         self.invoice_details = tk.Frame(self.new_label_frame, bg='#484b4c',
                                     width=self.content_frame.winfo_width() - 30,
-                                    height=self.content_frame.winfo_height() - 180)
+                                    height=self.content_frame.winfo_height() - 120)
         # Invoice details
         # ID
         lbl_id = tk.Label(self.invoice_details, bg='#484b4c', fg="white", text='Id: ')
-        lbl_id.place(x=20, y=20)
+        lbl_id.place(x=20, y=5)
         self.txt_id = tk.Label(self.invoice_details, width=20)
         self.txt_id['text'] = ''
-        self.txt_id.place(x=120, y=20)
+        self.txt_id.place(x=120, y=5)
 
         # Date
         lbl_date = tk.Label(self.invoice_details, bg='#484b4c', fg="white", text='Date: ')
-        lbl_date.place(x=330, y=20)
+        lbl_date.place(x=330, y=5)
         self.txt_date = tk.Label(self.invoice_details, width=20)
         self.txt_date['text'] = ''
-        self.txt_date .place(x=400, y=20)
+        self.txt_date.place(x=400, y=5)
 
         # Client
         lbl_client = tk.Label(self.invoice_details, bg='#484b4c', fg="white", text='Client: ')
@@ -177,16 +176,17 @@ class Invoice_interface:
         # Cancel Button
         self.btn_edit_invoice = tk.Button(self.invoice_details, text="Cancel Invoice", width=15,
                                           command=self.confirm_cancel_invoice)
-        self.btn_edit_invoice.place(x=600, y=250)
+        self.btn_edit_invoice.place(x=600, y=310)
 
         self.new_frame.place(x=0, y=0)
 
     def confirm_cancel_invoice(self):
-        pass
+        self.data.df_invoices.loc[self.data.df_invoices['ID'] == self.txt_select_invoice.get(), 'Status'] = 'Cancelled'
+        messagebox.showinfo('Factura Canelada', 'Su factura ha sido cancelada con exito!')
 
     def show_invoice_details(self):
         if self.txt_select_invoice.get() != "":
-            self.invoice_details.place(x=10, y=130)
+            self.invoice_details.place(x=10, y=90)
             df_invoice = self.data.get_invoice_data_by_id(self.txt_select_invoice.get())
             self.txt_id['text'] = df_invoice['ID'].iloc[0]
             # client
@@ -205,8 +205,12 @@ class Invoice_interface:
             for _, row in invoice_concepts.iterrows():
                 self.txt_row = tk.Label(self.invoice_details, width=100, anchor="w")
                 # 'Brand', 'Model', 'Transmission', 'Color', 'Year', 'Km', 'Car Type','Fuel'
-                brand_concept = ''
-                self.txt_row['text'] = row['Description'] + ' ' + row['Quantity'] + ' ' + row['Unit price']
+                car_register = self.data.df_cars[self.data.df_cars['ID'] == row['Description']]
+                brand_concept = (car_register['Brand'].iloc[0] + ' ' + car_register['Model'].iloc[0] +
+                                 ' ' + car_register['Transmission'].iloc[0] + ' ' + car_register['Color'].iloc[0] +
+                                 ' ' + car_register['Year'].iloc[0] + ' ' + car_register['Km'].iloc[0] +
+                                 ' ' + car_register['Car Type'].iloc[0] + ' ' + car_register['Fuel'].iloc[0])
+                self.txt_row['text'] = row['Description'] + ' ' + brand_concept + ' ' + row['Quantity'] + ' ' + row['Unit price']
                 self.txt_row.place(x=10, y=y)
                 y += 30
 
