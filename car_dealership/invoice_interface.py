@@ -1,3 +1,4 @@
+import pandas as pd
 from numpy.ma.core import indices
 import data
 import tkinter as tk
@@ -14,7 +15,6 @@ class Invoice_interface:
         self.content_frame.update_idletasks()  # Asegura que el layout esté calculado
         self.bottom_frame.update_idletasks()  # Asegura que el layout esté calculado
         self.item_list = []
-        self.filtered_df = self.data.df_sales
         self.table = None
         self.dict_filter = {}
         self.item_y = 5
@@ -32,6 +32,8 @@ class Invoice_interface:
                              for _, row in self.data.df_salesmen.iterrows()}
 
         self.subtotal = 0
+        self.create_filtered_df()
+
 
     def new_invoice(self):
         self.new_frame = tk.Frame(self.content_frame, width=self.content_frame.winfo_width(),
@@ -320,100 +322,75 @@ class Invoice_interface:
         self.new_frame = tk.Frame(self.content_frame, width=self.content_frame.winfo_width(),
                                   height=self.content_frame.winfo_height(), bg='#484b4c')
 
-        self.new_label_frame = tk.LabelFrame(self.new_frame, text="List of Cars",
+        self.new_label_frame = tk.LabelFrame(self.new_frame, text="List of Invoices",
                                              bg='#484b4c',
                                              width=self.content_frame.winfo_width() - 10,
                                              height=self.content_frame.winfo_height() - 10,
                                              fg='white')
         self.new_label_frame.place(x=5, y=5)
+        # 'ID', 'Client ID', 'Employee ID' 'Status'
 
-        # brand
-        lbl_filter_brand = tk.Label(self.new_label_frame, text="Brand", background='#484b4c', foreground='white')
-        lbl_filter_brand.place(x=10, y=10)
-        brand_list = self.data.df_cars['Brand'].unique().tolist()
-        brand_list.append('All')
-        self.txt_filter_brand = ttk.Combobox(self.new_label_frame, width=10, values=brand_list, state="readonly")
-        self.txt_filter_brand.place(x=10, y=30)
+        # ID
+        lbl_filter_id = tk.Label(self.new_label_frame, text="ID", background='#484b4c', foreground='white')
+        lbl_filter_id.place(x=10, y=10)
+        id_list = self.data.df_invoices['ID'].unique().tolist()
+        id_list.append('All')
+        self.txt_filter_id = ttk.Combobox(self.new_label_frame, width=10, values=id_list, state="readonly")
+        self.txt_filter_id.place(x=10, y=30)
         # lambda event: self.filter_table(event, "mi_parametro")
-        self.txt_filter_brand.bind("<<ComboboxSelected>>",
-                                   lambda event: self.filter_table(event, self.txt_filter_brand.get(), "Brand"))
+        self.txt_filter_id.bind("<<ComboboxSelected>>",
+                                   lambda event: self.filter_table(event, self.txt_filter_id.get(), "ID"))
 
-        # model
-        lbl_filter_model = tk.Label(self.new_label_frame, text="Model", background='#484b4c', foreground='white')
-        lbl_filter_model.place(x=100, y=10)
-        model_list = self.data.df_cars['Model'].unique().tolist()
-        model_list.append('All')
-        self.txt_filter_model = ttk.Combobox(self.new_label_frame, width=10, values=model_list, state="readonly")
-        self.txt_filter_model.place(x=100, y=30)
-        self.txt_filter_model.bind("<<ComboboxSelected>>",
-                                   lambda event: self.filter_table(event, self.txt_filter_model.get(), "Model"))
+        # Client ID
+        lbl_filter_client_id = tk.Label(self.new_label_frame, text="Client", background='#484b4c', foreground='white')
+        lbl_filter_client_id.place(x=100, y=10)
+        client_id_list = list(self.dict_clients.values())
+        client_id_list.append('All')
+        self.txt_filter_client_id = ttk.Combobox(self.new_label_frame, width=30, values=client_id_list, state="readonly")
+        self.txt_filter_client_id.place(x=100, y=30)
+        self.txt_filter_client_id.bind("<<ComboboxSelected>>",
+                                   lambda event: self.filter_table(event, self.txt_filter_client_id.get(), "Client ID"))
 
-        # transmission
-        lbl_filter_transmission = tk.Label(self.new_label_frame, text="Transmission", background='#484b4c',
+        # Employee ID
+        lbl_filter_employee_id = tk.Label(self.new_label_frame, text="Employee", background='#484b4c',
                                            foreground='white')
-        lbl_filter_transmission.place(x=190, y=10)
-        transmission_list = self.data.df_cars["Transmission"].unique().tolist()
-        transmission_list.append('All')
-        self.txt_filter_transmission = ttk.Combobox(self.new_label_frame, width=10, values=transmission_list,
+        lbl_filter_employee_id.place(x=310, y=10)
+        employee_id_list = list(self.dict_salesmen.values())
+        employee_id_list.append('All')
+        self.txt_filter_employee_id = ttk.Combobox(self.new_label_frame, width=30, values=employee_id_list,
                                                     state="readonly")
-        self.txt_filter_transmission.place(x=190, y=30)
-        self.txt_filter_transmission.bind("<<ComboboxSelected>>",
-                                          lambda event: self.filter_table(event, self.txt_filter_transmission.get(),
-                                                                          "Transmission"))
+        self.txt_filter_employee_id.place(x=310, y=30)
+        self.txt_filter_employee_id.bind("<<ComboboxSelected>>",
+                                          lambda event: self.filter_table(event, self.txt_filter_employee_id.get(),
+                                                                          "Employee ID"))
 
-        # color
-        lbl_filter_color = tk.Label(self.new_label_frame, text="Color", background='#484b4c', foreground='white')
-        lbl_filter_color.place(x=280, y=10)
-        color_list = self.data.df_cars["Color"].unique().tolist()
-        color_list.append('All')
-        self.txt_filter_color = ttk.Combobox(self.new_label_frame, width=10, values=color_list, state="readonly")
-        self.txt_filter_color.place(x=280, y=30)
-        self.txt_filter_color.bind("<<ComboboxSelected>>",
-                                   lambda event: self.filter_table(event, self.txt_filter_color.get(),
-                                                                   "Color"))
+        # Status
+        lbl_filter_stataus = tk.Label(self.new_label_frame, text="Status", background='#484b4c', foreground='white')
+        lbl_filter_stataus.place(x=520, y=10)
+        status_list = self.data.df_invoices["Status"].unique().tolist()
+        status_list.append('All')
+        self.txt_filter_status = ttk.Combobox(self.new_label_frame, width=10, values=status_list, state="readonly")
+        self.txt_filter_status.place(x=520, y=30)
+        self.txt_filter_status.bind("<<ComboboxSelected>>",
+                                   lambda event: self.filter_table(event, self.txt_filter_status.get(),
+                                                                   "Status"))
 
-        # year
-        lbl_filter_year = tk.Label(self.new_label_frame, text="Year", background='#484b4c', foreground='white')
-        lbl_filter_year.place(x=370, y=10)
-        year_list = self.data.df_cars['Year'].unique().tolist()
-        year_list.append('All')
-        self.txt_filter_year = ttk.Combobox(self.new_label_frame, width=10, values=year_list, state="readonly")
-        self.txt_filter_year.place(x=370, y=30)
-        self.txt_filter_year.bind("<<ComboboxSelected>>",
-                                  lambda event: self.filter_table(event, self.txt_filter_year.get(), "Year"))
-
-        # car type
-        lbl_filter_car_type = tk.Label(self.new_label_frame, text="Car Type", background='#484b4c', foreground='white')
-        lbl_filter_car_type.place(x=460, y=10)
-        car_type_list = self.data.df_cars["Car Type"].unique().tolist()
-        car_type_list.append('All')
-        self.txt_filter_car_type = ttk.Combobox(self.new_label_frame, width=10, values=car_type_list, state="readonly")
-        self.txt_filter_car_type.place(x=460, y=30)
-        self.txt_filter_car_type.bind("<<ComboboxSelected>>",
-                                      lambda event: self.filter_table(event, self.txt_filter_car_type.get(),
-                                                                      "Car Type"))
-
-        # fuel
-        lbl_filter_car_fuel = tk.Label(self.new_label_frame, text="Fuel", background='#484b4c', foreground='white')
-        lbl_filter_car_fuel.place(x=550, y=10)
-        fuel_list = self.data.df_cars["Fuel"].unique().tolist()
-        fuel_list.append('All')
-        self.txt_filter_fuel = ttk.Combobox(self.new_label_frame, width=10, values=fuel_list, state="readonly")
-        self.txt_filter_fuel.place(x=550, y=30)
-        self.txt_filter_fuel.bind("<<ComboboxSelected>>",
-                                  lambda event: self.filter_table(event, self.txt_filter_fuel.get(),
-                                                                  "Fuel"))
         # table frame
         # Crear Treeview
-        self.table = ttk.Treeview(self.new_label_frame, columns=('ID', 'Brand', 'Model', 'Transmission', 'Color', 'Price',
-                                                                 'Year', 'Km', 'Car Type',
-                                                                 'Fuel', 'Stock'), show="headings")
+        self.table = ttk.Treeview(self.new_label_frame, columns=('ID', 'Client ID', 'Employee ID', 'Date', 'Total',
+                                                                 'Status'), show="headings")
         self.table.place(x=10, y=60)
 
         # Definir encabezados
-        for col in ('ID', 'Brand', 'Model', 'Transmission', 'Color', 'Price', 'Year', 'Km', 'Car Type', 'Fuel', 'Stock'):
+        for col in ('ID', 'Total', 'Date', 'Status'):
             self.table.heading(col, text=col)
-            self.table.column(col, anchor="center", width=60)
+            self.table.column(col, anchor="center", width=80)
+
+        self.table.heading('Client ID', text='Client')
+        self.table.column('Client ID', anchor="center", width=200)
+
+        self.table.heading('Employee ID', text='Employee')
+        self.table.column('Employee ID', anchor="center", width=200)
 
         self.fill_table()
 
@@ -422,7 +399,7 @@ class Invoice_interface:
         # Función que se ejecuta al seleccionar un valor
 
     def filter_table(self, event, selected, column):
-        self.filtered_df = self.data.df_cars
+        self.create_filtered_df()
         if selected == 'All':
             if column in self.dict_filter:
                 del self.dict_filter[column]
@@ -431,6 +408,16 @@ class Invoice_interface:
         for key, value in self.dict_filter.items():
             self.filtered_df = self.filtered_df[self.filtered_df[key] == value]
         self.fill_table()
+
+    def create_filtered_df(self):
+        self.filtered_df = pd.DataFrame({
+            "ID": self.data.df_invoices["ID"],
+            "Client ID": self.data.df_invoices["Client ID"].map(self.dict_clients),  # reemplazo directo
+            "Employee ID": self.data.df_invoices["Employee ID"].map(self.dict_salesmen),
+            "Date" : self.data.df_invoices["Date"],
+            "Total" : self.data.df_invoices["Total"],
+            "Status" : self.data.df_invoices["Status"]
+        })
 
     def fill_table(self):
         # Limpiar tabla

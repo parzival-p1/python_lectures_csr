@@ -181,7 +181,7 @@ class Interface:
         elif item_text == "Graphs":
             pass
         elif item_text == "Print All Invoices":
-            pass
+            self.invoice_interface.print_all_invoices()
         else:
             pass
 
