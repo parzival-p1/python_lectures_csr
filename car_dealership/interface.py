@@ -8,6 +8,7 @@ from invoice_interface import Invoice_interface
 from sales_man_interface import Sales_man_interface
 from client_interface import Client_interface
 
+
 class Interface:
     def __init__(self):
         # window
@@ -179,7 +180,7 @@ class Interface:
         elif item_text == "Cancel Invoice":
             self.invoice_interface.cancel_invoice()
         elif item_text == "Graphs":
-            pass
+            self.invoice_interface.graphs_invoice()
         elif item_text == "Print All Invoices":
             self.invoice_interface.print_all_invoices()
         else:

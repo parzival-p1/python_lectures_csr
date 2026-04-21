@@ -1,6 +1,6 @@
 import pandas as pd
-from numpy.ma.core import indices
-import data
+import matplotlib.pyplot as plt
+from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 import tkinter as tk
 from tkinter import messagebox
 from tkinter import ttk
@@ -453,9 +453,89 @@ class Invoice_interface:
             # actualiza item_y al final
             # self.item_y = len(self.item_list) * 25 + 5
 
+    def graphs_invoice(self):
+        self.new_frame = tk.Frame(self.content_frame, width=self.content_frame.winfo_width(),
+                                  height=self.content_frame.winfo_height(), bg='#484b4c')
+
+        self.new_label_frame = tk.LabelFrame(self.new_frame, text="Graphs",
+                                             bg='#484b4c',
+                                             width=self.content_frame.winfo_width() - 10,
+                                             height=self.content_frame.winfo_height() - 10,
+                                             fg='white')
+        self.new_label_frame.place(x=5, y=5)
+
+        # select graph
+        lbl_select_graph = tk.Label(self.new_label_frame, bg='#484b4c', fg="white", text='Select Graph: ')
+        lbl_select_graph.place(x=30, y=10)
+        # 1. Numero de inoives canceladas vs activas (pie
+        # 2. Stock por cliente / (barra)
+        # 3. Facturas por mes (linea)
+        # 4. Vendedores por venta (pie)
+        # 5. Ventas x caracteristica (barra)
+        # 6. Brand x ventas (linea)
+        graph_list = ['1-Cancel vs Active Invoices', '2-Cars by Client', '3-Invoices by Month', '4-Sales by salesmen',
+                      '5-Sales by Features', '6-Sales by Brand']
+        self.txt_select_graph = ttk.Combobox(self.new_label_frame, width=26, state="readonly", values=graph_list)
+        self.txt_select_graph.place(x=120, y=10)
+
+        # Buttons
+        self.btn_select_graph = tk.Button(self.new_label_frame, text="Select Graph", width=15,
+                                            command=self.show_graph)
+        self.btn_select_graph.place(x=380, y=10)
+
+        # Separator
+        separator = tk.Frame(self.new_label_frame, bg='white', height=2, width=self.content_frame.winfo_width() - 30)
+        separator.place(x=10, y=50)
+        self.graph_frame = tk.Frame(self.new_label_frame, bg='#484b4c',
+                                        width=self.content_frame.winfo_width() - 30,
+                                        height=self.content_frame.winfo_height() - 120)
+        self.new_frame.place(x=0, y=0)
+
+    def show_graph(self):
+        if self.txt_select_graph.get() != '':
+            number, name = self.txt_select_graph.get().split('-')
+            if number == '1':
+                self.graph_1()
+            elif number == '2':
+                self.graph_2()
+            elif number == '3':
+                self.graph_3()
+            elif number == '4':
+                self.graph_4()
+            elif number == '5':
+                self.graph_5()
+            else:
+                self.graph_6()
+            # '1-Cancel vs Active Invoices', '2-Cars by Client', '3-Invoices by Month', '4-Sales by salesmen',
+            #                       '5-Sales by Features', '6-Sales by Brand'
+    def graph_1(self):
+        pass
+
+    def graph_2(self):
+        pass
+
+    def graph_3(self):
+        pass
+
+    def graph_4(self):
+        pass
+
+    def graph_5(self):
+        pass
+
+    def graph_6(self):
+        pass
+
 """
 TAREA: 
 INVESTIGAR:
-    0. En la func show_invoice_details(): investigar como poner el nombre en lugar del id 
-    sacar de los df de clientes Y empleados.
+    0. Imprimir un PDF con la fadctura, en new invoice
+    
+Graficas:
+1. Numero de inoives canceladas vs activas (pie
+2. Stock por cliente / (barra)
+3. Facturas por mes (linea)
+4. Vendedores por venta (pie)
+5. Ventas x caracteristica (barra)
+6. Brand x ventas (linea)
 """
